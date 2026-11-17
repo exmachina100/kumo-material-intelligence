@@ -6,7 +6,7 @@ def convert(root: Path, output: Path, size: int):
     import cairosvg
     from PIL import Image
     from io import BytesIO
-import hashlib, random
+    import hashlib, random
     count=0
     for src in sorted(root.glob('*/*/*.svg')):
         split,family=src.relative_to(root).parts[:2]
