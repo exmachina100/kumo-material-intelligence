@@ -12,6 +12,7 @@ All generated results go to training/out/vision-probe (ignored by Git).
 """
 from __future__ import annotations
 import argparse
+import hashlib
 import json
 import random
 import time
@@ -31,6 +32,7 @@ from torchvision import models, transforms
 from torchvision.transforms import InterpolationMode
 
 from vision_dataset import select_catalog_samples
+from rejection_metrics import rejection_summary
 
 SEED = 42
 IMAGE_SIZE = 224
@@ -135,6 +137,37 @@ def main():
                                for j,i in enumerate(test)],
         "runtime_seconds":round(time.perf_counter()-start,1),
     }
+    # Probe explicit out-of-label catalog categories as a tiny OOD sanity check.
+    # These remain weak source hints, not a real automotive unknown-detection set.
+    source_records=json.loads((args.source/"provenance.json").read_text())
+    trained_ids={item["asset_id"] for item in rows}
+    seen_ood_hash=set()
+    ood=[]
+    for item in source_records:
+        if item.get("source")!="Poly Haven" or item.get("license")!="CC0":
+            continue
+        if item.get("asset_id") in trained_ids or item.get("catalog_suggestion") in classes:
+            continue
+        name=item.get("path")
+        if not isinstance(name,str) or not name.endswith(".jpg") or Path(name).name!=name:
+            continue
+        image_path=args.source/name
+        if not image_path.is_file():
+            continue
+        hash_value=hashlib.sha256(image_path.read_bytes()).hexdigest()
+        if hash_value!=item.get("sha256") or hash_value in seen_ood_hash:
+            continue
+        seen_ood_hash.add(hash_value)
+        ood.append({"asset_id":item["asset_id"],"path":str(image_path),
+                    "catalog_category":item.get("catalog_suggestion") or "other"})
+    if ood:
+        out_embedding=extract_embeddings(encoder,ood,args.batch_size)
+        out_scores=head.predict_proba(scaler.transform(out_embedding)).max(axis=1)
+        diag=rejection_summary(scores.max(axis=1),out_scores)
+        diag["excluded_catalog_categories"]=dict(Counter(x["catalog_category"] for x in ood))
+    else:
+        diag=rejection_summary(scores.max(axis=1),[])
+    report["unknown_rejection_catalog_proxy"]=diag
     args.output.mkdir(parents=True,exist_ok=True)
     (args.output/"evaluation.json").write_text(json.dumps(report,indent=2)+"\n")
     (args.output/"labels.json").write_text(json.dumps(list(head.classes_),indent=2)+"\n")
