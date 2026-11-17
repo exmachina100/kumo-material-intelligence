@@ -11,3 +11,8 @@ jobs:
         with:
           node-version: '22'
       - run: npm test
+      - name: Compile and validate Python dataset code
+        run: |
+          python -m py_compile training/external/ingest_polyhaven.py training/synthetic/convert_svg.py training/train_classifier.py training/synthetic/check_manifest.py
+          python -m unittest discover -s tests -p 'test_*.py'
+          python training/synthetic/check_manifest.py
