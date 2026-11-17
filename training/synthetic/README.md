@@ -1,6 +1,6 @@
 # Kumo CMF synthetic training set (v0.1)
 
-432 deterministic **synthetic vector material swatches**, 12 material families × 36 each. Each family: 30 train / 3 validation / 3 test; 360/36/36 total.
+468 deterministic **synthetic vector material swatches**, 13 material families × 36 each. Each family: 30 train / 3 validation / 3 test; 390/39/39 total.
 
 **IMPORTANT:** These are *illustrative procedural patterns*, not photographs, PBR-calibrated surfaces, measured materials, or proof of classification performance. They should be used for pipeline testing, augmentation, or UI demos only. The validation and test subsets are synthetic smoke-test splits, NOT valid estimates of real-world accuracy. Synthetic generation artifacts can leak across splits. Build independent real-material, sample-grouped evaluation data before claiming CMF recognition.
 
