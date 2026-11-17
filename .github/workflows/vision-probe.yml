@@ -1,0 +1,45 @@
+name: Research - MobileNet material vision probe
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'training/experiments/train_vision_probe.py'
+      - 'training/experiments/vision_dataset.py'
+      - '.github/workflows/vision-probe.yml'
+permissions:
+  contents: read
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install training dependencies (CPU)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "numpy>=1.26,<3" "Pillow>=10,<13" "scikit-learn>=1.5,<2" "onnx>=1.16,<2" "onnxruntime>=1.19,<2"
+          python -m pip install "torch>=2.4,<3" "torchvision>=0.19,<1" --index-url https://download.pytorch.org/whl/cpu
+      - name: Run pretrained compact vision probe
+        run: python training/experiments/train_vision_probe.py
+      - name: Enforce research-only artifact gate
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          out=Path("training/out/vision-probe")
+          report=json.loads((out/"evaluation.json").read_text())
+          assert report["status"]=="RESEARCH_ONLY"
+          assert report["release_eligible"] is False
+          assert report["expert_reviewed"] is False
+          assert report.get("onnx_export",{}).get("success") is True
+          assert set(json.loads((out/"labels.json").read_text())) == set(report["classes"])
+          print("Pretrained vision research prototype produced and validated")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: materialnet-vision-probe-research-onnx
+          path: training/out/vision-probe/
+          retention-days: 30
