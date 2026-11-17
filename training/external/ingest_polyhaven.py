@@ -101,9 +101,9 @@ def select_candidates(catalog: dict, limit: int, per_family: int) -> list[tuple[
     for i in range(per_family):
         for family in DISCOVERY:
             available = [x for x in groups[family] if x[0] not in seen]
-            if len(available) <= i:
+            if not available:
                 continue
-            asset = available[i]
+            asset = available[0]
             selected.append(asset)
             seen.add(asset[0])
             if len(selected) >= limit:
