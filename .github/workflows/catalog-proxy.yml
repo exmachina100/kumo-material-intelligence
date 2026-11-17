@@ -1,0 +1,40 @@
+name: Research only - CMF catalog proxy baseline
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'training/experiments/train_catalog_proxy.py'
+      - '.github/workflows/catalog-proxy.yml'
+permissions:
+  contents: read
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install "numpy>=1.26,<3" "Pillow>=10,<13" "scikit-learn>=1.5,<2"
+      - name: Train limited research proxy classifier
+        run: python training/experiments/train_catalog_proxy.py --min-class-samples 8
+      - name: Guard against accidental production release
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          out=Path("training/out/catalog-proxy")
+          model=json.loads((out/"catalog-proxy-model.json").read_text())
+          assert model["approved"] is False
+          assert model["kind"]=="experimental-catalog-proxy"
+          assert len(model["classes"])>=2
+          report=json.loads((out/"catalog-proxy-report.json").read_text())
+          assert report["release_eligible"] is False
+          print("Experimental proxy model packaged only as a CI artifact")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: research-cmf-catalog-proxy-not-for-production
+          path: training/out/catalog-proxy/
+          retention-days: 14
