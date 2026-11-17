@@ -23,9 +23,19 @@ jobs:
       - run: python -m pip install "Pillow>=10,<13"
       - name: Generate 156 original raster samples
         run: python training/synthetic/generate_png_samples.py --output training/image_samples --count 12 --size 192
-      - name: Fetch curated CC0 previews with provenance
-        run: python training/external/ingest_polyhaven.py --output training/external/polyhaven_cc0_staging --limit 14
-        continue-on-error: true
+      - name: Expand CC0 real-material reference staging and provenance
+        run: python training/external/ingest_polyhaven.py --output training/external/polyhaven_cc0_staging --limit 110 --per-family 16
+      - name: Validate CC0 reference staging and provenance
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('training/external/polyhaven_cc0_staging')
+          data=json.loads((p/'provenance.json').read_text())
+          valid=[x for x in data if x.get('license')=='CC0' and x.get('review_status') in ('needs_expert_review','reviewed') and (p/x['path']).is_file()]
+          assert len(valid)>=35, f'Expected at least 35 validated source entries; got {len(valid)}'
+          print(f'{len(valid)} CC0 assets staged with review gate and provenance')
+          PY
       - name: Check output sample counts
         run: |
           python - <<'PY'
