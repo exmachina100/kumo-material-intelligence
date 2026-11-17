@@ -28,6 +28,7 @@ jobs:
           mkdir -p site/apps site/packages
           cp -R apps/demo site/apps/demo
           cp -R apps/review site/apps/review
+          cp -R apps/research site/apps/research
           cp -R packages/cmf-core site/packages/cmf-core
           cp -R packages/material-dna site/packages/material-dna
           cp -R packages/inference-sdk site/packages/inference-sdk
