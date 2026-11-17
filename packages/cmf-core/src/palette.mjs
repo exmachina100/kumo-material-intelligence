@@ -39,7 +39,7 @@ export function deltaE2000(lab1,lab2){
  const dTheta=30*Math.exp(-(((hbar-275)/25)**2)),Rc=2*Math.sqrt(Cbarp**7/(Cbarp**7+25**7));
  const Sl=1+.015*(Lbar-50)**2/Math.sqrt(20+(Lbar-50)**2),Sc=1+.045*Cbarp,Sh=1+.015*Cbarp*T;
  const Rt=-Math.sin(2*dTheta*rad)*Rc;
- const x=dL/Sl,y=dC/Sc,z=dH/(Sh*Cbarp||1);
+ const x=dL/Sl,y=dC/Sc,z=dH/Sh;
  return Math.sqrt(Math.max(0,x*x+y*y+z*z+Rt*y*z));
 }
 export function rankColorMatches(target,records,limit=8){
