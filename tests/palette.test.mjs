@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {extractPalette,deltaE2000,rankColorMatches} from '../packages/cmf-core/src/palette.mjs';
+import {validateMaterial} from '../packages/material-dna/src/index.mjs';
+import {analyzePixels} from '../packages/inference-sdk/src/index.mjs';
+import {MaterialEngine} from '../packages/inference-sdk/src/router.mjs';
+test('empty transparent image yields empty palette',()=>assert.deepEqual(extractPalette(new Uint8ClampedArray([1,2,3,0])),[]));
+test('palette extracts multiple colors',()=>{const data=new Uint8ClampedArray([255,0,0,255,0,0,255,255,255,0,0,255,255,0,0,255]);const p=extractPalette(data,{stride:1});assert.equal(p.length,2);assert.equal(p[0].hex,'#FF0000')});
+test('CIEDE2000 known Sharma pair',()=>assert.ok(Math.abs(deltaE2000([50,2.6772,-79.7751],[50,0,-82.7485])-2.0425)<0.001));
+test('color search sorts by distance',()=>{const a=[50,0,0];const data=[{id:'far',color:{lab:[90,0,0]}},{id:'close',color:{lab:a}}];assert.equal(rankColorMatches(a,data)[0].id,'close')});
+test('Material DNA validates normal analysis',()=>{const r=analyzePixels(new Uint8ClampedArray([20,30,40,255]),{stride:1});assert.equal(validateMaterial(r).valid,true)});
+test('engine falls back to deterministic without weights',async()=>{const r=await new MaterialEngine().analyze(new Uint8ClampedArray([20,30,40,255]),{stride:1});assert.equal(r.classification.family,'unknown');assert.equal(r.execution.classifierAvailable,false)});
+test('engine rejects invalid classifier response',async()=>{const r=await new MaterialEngine({classifier:{classify:async()=>({family:'metal',confidence:999})}}).analyze(new Uint8ClampedArray([1,2,3,255]));assert.equal(r.classification.family,'unknown')});
