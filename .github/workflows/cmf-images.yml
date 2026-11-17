@@ -1,0 +1,55 @@
+name: Generate and ingest CMF material images
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'training/synthetic/generate_png_samples.py'
+      - 'training/external/ingest_polyhaven.py'
+      - 'training/external/SOURCES.md'
+      - '.github/workflows/cmf-images.yml'
+permissions:
+  contents: write
+jobs:
+  generate-and-ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install "Pillow>=10,<13"
+      - name: Generate 156 original raster samples
+        run: python training/synthetic/generate_png_samples.py --output training/image_samples --count 12 --size 192
+      - name: Fetch curated CC0 previews with provenance
+        run: python training/external/ingest_polyhaven.py --output training/external/polyhaven_cc0_staging --limit 14
+        continue-on-error: true
+      - name: Check output sample counts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          png=list(Path('training/image_samples').rglob('*.png'))
+          assert len(png)==156, f'Expected 156 synthetic PNGs, got {len(png)}'
+          print('Generated',len(png),'PNG image samples')
+          PY
+      - name: Upload bundle for download
+        uses: actions/upload-artifact@v4
+        with:
+          name: kumo-cmf-material-training-images
+          path: |
+            training/image_samples/
+            training/external/polyhaven_cc0_staging/
+          retention-days: 30
+      - name: Commit images and provenance into training
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f training/image_samples training/external/polyhaven_cc0_staging || true
+          if git diff --cached --quiet; then
+            echo "No new generated images to commit"
+          else
+            git commit -m "Add generated raster CMF samples and CC0 staging images"
+            git push origin HEAD:main
+          fi
