@@ -1,8 +1,62 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Kumo Material Intelligence · MVP</title><style>
-:root{font-family:Inter,system-ui,sans-serif;color:#eee;background:#111318}*{box-sizing:border-box}body{margin:0;padding:clamp(16px,5vw,64px)}main{max-width:1000px;margin:auto}header{margin-bottom:40px}.eyebrow{letter-spacing:.14em;text-transform:uppercase;color:#9ba5b6;font-size:11px}h1{font-size:clamp(28px,5vw,52px);letter-spacing:-.04em;margin:12px 0}p{color:#abb1ba;line-height:1.55}.layout{display:grid;grid-template-columns:1fr 1fr;gap:24px}@media(max-width:720px){.layout{grid-template-columns:1fr}}.panel{border:1px solid #343844;border-radius:16px;padding:22px;background:#1a1d23}input{max-width:100%}img{max-width:100%;width:100%;max-height:400px;object-fit:contain;margin-top:20px;border-radius:10px}pre{font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;color:#c7d5ce}.swatch{height:100px;border-radius:12px;margin:14px 0;border:1px solid #ffffff22}.notice{font-size:12px;color:#d0b887}
-</style></head><body><main><header><div class="eyebrow">KUMO LABS / RESEARCH PROTOTYPE 0.1</div><h1>Material Intelligence</h1><p>Local-first material DNA. Upload an image to extract a dominant palette color and export structured metadata. Nothing leaves your browser.</p></header><section class="layout"><div class="panel"><h2>Analyze surface</h2><input id="file" type="file" accept="image/*"/><img id="preview" alt="Your selected material sample" hidden/><p class="notice">A real material classifier has not yet been trained. Substrate, finish, and PBR values are intentionally marked unknown.</p></div><div class="panel"><h2>Material DNA</h2><div id="swatch" class="swatch" style="background:#333"></div><p id="status">Select a material photo to begin.</p><pre id="output"></pre><button id="download" disabled>Download Material DNA JSON</button></div></section></main><script type="module">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101217"><link rel="manifest" href="./manifest.webmanifest">
+<title>KUMO — Material Intelligence</title>
+<style>
+:root{font:14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;background:#101217;color:#f0f1f1}
+*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer;background:#d0e3da;color:#19221d;border:0;border-radius:8px;padding:10px 14px}button:disabled{opacity:.4;cursor:not-allowed}.secondary{background:#282d34;color:#ecedef}.shell{max-width:1250px;margin:auto;padding:24px}.header{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #343943;padding-bottom:18px}.brand{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:#a8c4b5}.sub{font-size:12px;color:#98a2ac}h1{font-size:clamp(30px,5vw,52px);line-height:1.07;letter-spacing:-.045em;margin:32px 0 9px}h2{font-size:16px;margin:0 0 14px}p{color:#a6b0ba}.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:18px;margin-top:25px}.card{background:#1a1e24;border:1px solid #333941;padding:22px;border-radius:14px}.drop{display:grid;place-items:center;min-height:225px;border:1px dashed #58646b;border-radius:12px;text-align:center;padding:20px;background:#20252b}.drop.drag{border-color:#b7e6cb}input[type=file]{max-width:100%;color:#a9b4bd}#preview{display:block;max-width:100%;max-height:330px;object-fit:contain;margin:20px auto 0;border-radius:8px}#preview[hidden]{display:none}.palette{display:flex;min-height:78px;border-radius:8px;overflow:hidden;gap:2px;background:#292f37}.chip{flex:1;min-width:0;cursor:pointer;display:flex;align-items:end;padding:8px;font-size:10px;font-weight:650;color:white;text-shadow:0 1px 4px #000}.meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.field{background:#252a31;border-radius:8px;padding:11px}.field span{display:block;color:#9ba6ae;font-size:11px}.field b{font-size:13px}select{width:100%;padding:10px;border-radius:8px;background:#282d34;color:#eee;border:1px solid #48505a}.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.library{margin-top:18px}.records{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}.record{background:#22272e;border-radius:10px;padding:13px;display:flex;align-items:center;gap:12px;min-width:0}.dot{width:44px;height:44px;border-radius:8px;flex-shrink:0}.record b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}.record small{color:#9ca7b3}.record button{margin-left:auto;padding:5px 9px}.notice{font-size:12px;color:#c4b586}.hidden{display:none!important}details{margin-top:12px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;color:#abb8b4}
+@media(max-width:730px){.shell{padding:16px}.grid{grid-template-columns:1fr}.header{align-items:start}.card{padding:16px}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header><div><div class="brand">KUMO LABS / MATERIAL INTELLIGENCE</div><div class="sub">CMF workstation · local-first research preview 0.2</div></div><div class="sub" id="runtime">● On-device analysis</div></header>
+<h1>From surface to<br>material intelligence.</h1>
+<p>Discover color structure, build editable Material DNA, and curate your own CMF library. Your images stay on this device.</p>
+<div class="grid">
+<section class="card"><h2>01 / Capture material</h2>
+<div class="drop" id="drop"><div><div style="font-size:28px;margin-bottom:8px">◈</div><b>Drop a surface image here</b><p>Or choose a file from your device</p><input id="file" type="file" accept="image/*" aria-label="Upload material image"></div></div>
+<img id="preview" alt="Selected material surface" hidden>
+<p class="notice">Visual material-family classification is not trained yet. You can identify a material manually; physical properties remain unverified.</p>
+</section>
+<section class="card"><h2>02 / Material DNA</h2>
+<div class="palette" id="palette"><div class="chip" style="background:#3e4649">Awaiting image</div></div>
+<div class="meta">
+<div class="field"><span>Dominant color</span><b id="primary">—</b></div>
+<div class="field"><span>Color space</span><b id="lab">CIELAB · —</b></div>
+<div class="field"><span>Analysis method</span><b>Deterministic / Local</b></div>
+<div class="field"><span>Recognition</span><b id="recognition">Unavailable · Manual</b></div>
+</div>
+<label for="family" class="sub">Designer material classification</label>
+<select id="family"><option value="unknown">Unknown / unassigned</option></select>
+<div class="controls"><button id="save" disabled>Save to library</button><button id="download" disabled class="secondary">Export JSON</button></div>
+<details><summary class="sub">Inspect Material DNA record</summary><pre id="json">Select an image to begin.</pre></details>
+</section></div>
+<section class="card library"><div class="header" style="border:0;padding:0 0 16px"><div><h2 style="margin:0">03 / Personal material library</h2><div class="sub">Metadata saved in this browser · no image files retained</div></div><button class="secondary" id="exportlib">Export library</button></div><div class="records" id="records"></div></section>
+</main>
+<script type="module">
 import {analyzePixels} from '../../packages/inference-sdk/src/index.mjs';
-const file=document.querySelector('#file'),preview=document.querySelector('#preview'),output=document.querySelector('#output'),status=document.querySelector('#status'),swatch=document.querySelector('#swatch'),download=document.querySelector('#download');let result;
-file.addEventListener('change',async()=>{const f=file.files?.[0];if(!f)return;const url=URL.createObjectURL(f);const img=new Image();try{await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});const scale=Math.min(1,512/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,c.width,c.height);result=analyzePixels(ctx.getImageData(0,0,c.width,c.height).data,{sourceName:f.name,stride:6});preview.src=url;preview.hidden=false;swatch.style.background=result.color.hex;status.textContent='Dominant color '+result.color.hex+' · RGB '+result.color.rgb.join(', ');output.textContent=JSON.stringify(result,null,2);download.disabled=false;}catch(e){status.textContent='Unable to analyze this image.';console.error(e)}finally{if(preview.hidden)URL.revokeObjectURL(url)}});
-download.addEventListener('click',()=>{if(!result)return;const u=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=u;a.download='material-dna.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)});
-</script></body></html>
+import {extractPalette} from '../../packages/cmf-core/src/palette.mjs';
+import {validateMaterial,FAMILIES} from '../../packages/material-dna/src/index.mjs';
+const $=id=>document.getElementById(id);
+const KEY='kumo-material-library-v1';
+const library=()=>{try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch{return []}};
+const saveLibrary=items=>localStorage.setItem(KEY,JSON.stringify(items));
+let record=null,palette=[];
+for(const fam of FAMILIES.filter(x=>x!=='unknown')){const op=document.createElement('option');op.value=fam;op.textContent=fam.replace(/-/g,' ');$('family').append(op)}
+function downloadJSON(data,name){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500)}
+function update(){if(!record)return;const validation=validateMaterial(record);$('json').textContent=JSON.stringify(record,null,2);$('save').disabled=!validation.valid;$('download').disabled=!validation.valid;$('recognition').textContent=record.classification.family==='unknown'?'Unavailable · Manual':'Designer-authored'}
+function renderLibrary(){const root=$('records');root.replaceChildren();const all=library();if(!all.length){root.textContent='No saved materials yet. Analyze an image to begin.';root.className='records sub';return}root.className='records';for(const m of all){const card=document.createElement('div');card.className='record';const sw=document.createElement('div');sw.className='dot';sw.style.background=m.color.hex;const text=document.createElement('div');const name=document.createElement('b');name.textContent=m.source?.name||m.id;const detail=document.createElement('small');detail.textContent=m.classification.family+' · '+m.color.hex;text.append(name,detail);const del=document.createElement('button');del.className='secondary';del.textContent='×';del.setAttribute('aria-label','Remove material');del.onclick=()=>{saveLibrary(library().filter(x=>x.id!==m.id));renderLibrary()};card.append(sw,text,del);root.append(card)}}
+async function analyze(file){if(!file||!file.type.startsWith('image/'))return;let bmp;try{bmp=await createImageBitmap(file);const scale=Math.min(1,640/Math.max(bmp.width,bmp.height));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bmp.width*scale));canvas.height=Math.max(1,Math.round(bmp.height*scale));const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(bmp,0,0,canvas.width,canvas.height);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+record=analyzePixels(pixels,{sourceName:file.name,stride:5});palette=extractPalette(pixels,{stride:5,maxColors:6});record.palette=palette;record.id=crypto.randomUUID();$('primary').textContent=record.color.hex;$('lab').textContent=record.color.lab.map(x=>x.toFixed(1)).join(' / ');$('family').value='unknown';$('palette').replaceChildren();
+for(const c of palette){const d=document.createElement('div');d.className='chip';d.style.background=c.hex;d.title=c.hex+' · '+c.share+'%';d.textContent=c.hex;d.onclick=()=>navigator.clipboard?.writeText(c.hex);$('palette').append(d)}
+const url=URL.createObjectURL(file);const preview=$('preview');preview.onload=()=>URL.revokeObjectURL(url);preview.src=url;preview.hidden=false;update()}catch(e){console.error(e);alert('Unable to read this image.')}finally{bmp?.close?.()}}
+$('file').onchange=e=>analyze(e.target.files[0]);const drop=$('drop');drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag')};drop.ondragleave=()=>drop.classList.remove('drag');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');analyze(e.dataTransfer.files[0])};
+$('family').onchange=()=>{if(!record)return;record.classification={family:$('family').value,finish:null,confidence:null,verified:false};record.provenance={level:'designer-authored',modelVersion:null};update()};
+$('save').onclick=()=>{if(!record)return;const all=library().filter(x=>x.id!==record.id);all.unshift(record);try{saveLibrary(all.slice(0,150));renderLibrary()}catch{alert('Local storage is full; export your library before adding more.')}};
+$('download').onclick=()=>record&&downloadJSON(record,'kumo-material-dna.json');$('exportlib').onclick=()=>downloadJSON(library(),'kumo-material-library.json');renderLibrary();
+if('serviceWorker'in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./sw.js').catch(console.warn);
+</script>
+</body></html>
