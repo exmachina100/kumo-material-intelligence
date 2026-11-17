@@ -1,0 +1,13 @@
+{
+ "$schema":"https://json-schema.org/draft/2020-12/schema",
+ "title":"Kumo Material DNA","type":"object","required":["schemaVersion","id","source","color","classification","provenance"],
+ "properties":{
+  "schemaVersion":{"const":"0.1.0"},"id":{"type":"string"},
+  "source":{"type":"object","properties":{"type":{"enum":["image","manual","supplier"]},"name":{"type":"string"}},"required":["type"]},
+  "color":{"type":"object","properties":{"hex":{"type":"string","pattern":"^#[0-9A-Fa-f]{6}$"},"rgb":{"type":"array","items":{"type":"integer","minimum":0,"maximum":255},"minItems":3,"maxItems":3}},"required":["hex","rgb"]},
+  "classification":{"type":"object","properties":{"family":{"type":"string"},"finish":{"type":["string","null"]},"confidence":{"type":["number","null"],"minimum":0,"maximum":1},"verified":{"type":"boolean"}},"required":["family","confidence","verified"]},
+  "appearance":{"type":"object","properties":{"roughnessEstimate":{"type":["number","null"],"minimum":0,"maximum":1},"metallicEstimate":{"type":["number","null"],"minimum":0,"maximum":1}}},
+  "provenance":{"type":"object","properties":{"level":{"enum":["algorithmic","model-estimated","designer-authored","supplier-verified"]},"modelVersion":{"type":["string","null"]}},"required":["level"]},
+  "createdAt":{"type":"string","format":"date-time"}
+ }
+}
