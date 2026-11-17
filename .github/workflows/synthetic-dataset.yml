@@ -1,0 +1,39 @@
+name: Build synthetic CMF PNG dataset
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'training/synthetic/**'
+      - '.github/workflows/synthetic-dataset.yml'
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check source manifest
+        run: python training/synthetic/check_manifest.py
+      - name: Install rasterization dependencies
+        run: python -m pip install "cairosvg>=2.7,<3" "Pillow>=10,<13"
+      - name: Convert SVG images into RGB PNG training data
+        run: python training/synthetic/convert_svg.py --size 160
+      - name: Verify train-val-test files and duplicates
+        run: python training/audit_dataset.py --data training/data --json training/audit-result.json
+      - name: Package into a downloadable zip
+        run: |
+          cd training
+          zip -qr synthetic-cmf-png-160.zip data synthetic/manifest.csv synthetic/README.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-cmf-png-160
+          path: training/synthetic-cmf-png-160.zip
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-cmf-dataset-audit
+          path: training/audit-result.json
+          retention-days: 30
