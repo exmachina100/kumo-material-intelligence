@@ -1,0 +1,40 @@
+name: Deploy CMF browser prototype
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate application tests
+        run: npm test
+      - name: Assemble static deployment
+        run: |
+          mkdir -p site/apps site/packages
+          cp -R apps/demo site/apps/demo
+          cp -R packages/cmf-core site/packages/cmf-core
+          cp -R packages/material-dna site/packages/material-dna
+          cp -R packages/inference-sdk site/packages/inference-sdk
+          touch site/.nojekyll
+          printf '<meta http-equiv="refresh" content="0; url=apps/demo/"><a href="apps/demo/">Open Kumo CMF</a>' > site/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
