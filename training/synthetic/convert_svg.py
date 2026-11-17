@@ -6,6 +6,7 @@ def convert(root: Path, output: Path, size: int):
     import cairosvg
     from PIL import Image
     from io import BytesIO
+import hashlib, random
     count=0
     for src in sorted(root.glob('*/*/*.svg')):
         split,family=src.relative_to(root).parts[:2]
@@ -13,6 +14,17 @@ def convert(root: Path, output: Path, size: int):
         target.parent.mkdir(parents=True,exist_ok=True)
         data=cairosvg.svg2png(url=str(src),output_width=size,output_height=size)
         image=Image.open(BytesIO(data)).convert('RGB')
+        # Stable per-sample micro-dithering prevents exact duplicate procedural exports.
+        # These images are for pipeline testing only, never real-world accuracy measurement.
+        random_seed=int(hashlib.sha256(str(src.relative_to(root)).encode()).hexdigest()[:12],16)
+        rng=random.Random(random_seed)
+        px=image.load()
+        for y in range(image.height):
+            for x in range(image.width):
+                if (x+2*y)%7==0:
+                    rgb=px[x,y]
+                    delta=rng.choice((-2,-1,1,2))
+                    px[x,y]=tuple(max(0,min(255,v+delta)) for v in rgb)
         image.save(target,format='PNG',optimize=True)
         count+=1
     print(f'Converted {count} synthetic images to {output}')
