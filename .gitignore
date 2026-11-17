@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+.env
+.env.*
+!.env.example
+training/data/*
+!training/data/README.md
+training/out/
+*.onnx
+*.pt
+*.pth
+*.safetensors
+__pycache__/
+.pytest_cache/
