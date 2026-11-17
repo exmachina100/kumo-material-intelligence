@@ -27,9 +27,12 @@ jobs:
         run: |
           mkdir -p site/apps site/packages
           cp -R apps/demo site/apps/demo
+          cp -R apps/review site/apps/review
           cp -R packages/cmf-core site/packages/cmf-core
           cp -R packages/material-dna site/packages/material-dna
           cp -R packages/inference-sdk site/packages/inference-sdk
+          mkdir -p site/training/external
+          cp -R training/external/polyhaven_cc0_staging site/training/external/polyhaven_cc0_staging
           touch site/.nojekyll
           printf '<meta http-equiv="refresh" content="0; url=apps/demo/"><a href="apps/demo/">Open Kumo CMF</a>' > site/index.html
       - uses: actions/configure-pages@v5
