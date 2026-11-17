@@ -6,13 +6,13 @@
 <title>KUMO — Material Intelligence</title>
 <style>
 :root{font:14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;background:#101217;color:#f0f1f1}
-*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer;background:#d0e3da;color:#19221d;border:0;border-radius:8px;padding:10px 14px}button:disabled{opacity:.4;cursor:not-allowed}.secondary{background:#282d34;color:#ecedef}.shell{max-width:1250px;margin:auto;padding:24px}.header{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #343943;padding-bottom:18px}.brand{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:#a8c4b5}.sub{font-size:12px;color:#98a2ac}h1{font-size:clamp(30px,5vw,52px);line-height:1.07;letter-spacing:-.045em;margin:32px 0 9px}h2{font-size:16px;margin:0 0 14px}p{color:#a6b0ba}.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:18px;margin-top:25px}.card{background:#1a1e24;border:1px solid #333941;padding:22px;border-radius:14px}.drop{display:grid;place-items:center;min-height:225px;border:1px dashed #58646b;border-radius:12px;text-align:center;padding:20px;background:#20252b}.drop.drag{border-color:#b7e6cb}input[type=file]{max-width:100%;color:#a9b4bd}#preview{display:block;max-width:100%;max-height:330px;object-fit:contain;margin:20px auto 0;border-radius:8px}#preview[hidden]{display:none}.palette{display:flex;min-height:78px;border-radius:8px;overflow:hidden;gap:2px;background:#292f37}.chip{flex:1;min-width:0;cursor:pointer;display:flex;align-items:end;padding:8px;font-size:10px;font-weight:650;color:white;text-shadow:0 1px 4px #000}.meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.field{background:#252a31;border-radius:8px;padding:11px}.field span{display:block;color:#9ba6ae;font-size:11px}.field b{font-size:13px}select{width:100%;padding:10px;border-radius:8px;background:#282d34;color:#eee;border:1px solid #48505a}.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.library{margin-top:18px}.records{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}.record{background:#22272e;border-radius:10px;padding:13px;display:flex;align-items:center;gap:12px;min-width:0}.dot{width:44px;height:44px;border-radius:8px;flex-shrink:0}.record b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}.record small{color:#9ca7b3}.record button{margin-left:auto;padding:5px 9px}.notice{font-size:12px;color:#c4b586}.hidden{display:none!important}details{margin-top:12px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;color:#abb8b4}
+*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer;background:#d0e3da;color:#19221d;border:0;border-radius:8px;padding:10px 14px}button:disabled{opacity:.4;cursor:not-allowed}.secondary{background:#282d34;color:#ecedef}.shell{max-width:1250px;margin:auto;padding:24px}.header{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #343943;padding-bottom:18px}.brand{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:#a8c4b5}.sub{font-size:12px;color:#98a2ac}h1{font-size:clamp(30px,5vw,52px);line-height:1.07;letter-spacing:-.045em;margin:32px 0 9px}h2{font-size:16px;margin:0 0 14px}p{color:#a6b0ba}.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:18px;margin-top:25px}.card{background:#1a1e24;border:1px solid #333941;padding:22px;border-radius:14px}.drop{display:grid;place-items:center;min-height:225px;border:1px dashed #58646b;border-radius:12px;text-align:center;padding:20px;background:#20252b}.drop.drag{border-color:#b7e6cb}input[type=file]{max-width:100%;color:#a9b4bd}#preview{display:block;max-width:100%;max-height:330px;object-fit:contain;margin:20px auto 0;border-radius:8px}#preview[hidden]{display:none}.palette{display:flex;min-height:78px;border-radius:8px;overflow:hidden;gap:2px;background:#292f37}.chip{flex:1;min-width:0;cursor:pointer;display:flex;align-items:end;padding:8px;font-size:10px;font-weight:650;color:white;text-shadow:0 1px 4px #000}.meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.field{background:#252a31;border-radius:8px;padding:11px}.field span{display:block;color:#9ba6ae;font-size:11px}.field b{font-size:13px}select{width:100%;padding:10px;border-radius:8px;background:#282d34;color:#eee;border:1px solid #48505a}.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.library{margin-top:18px}.records{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}.record{background:#22272e;border-radius:10px;padding:13px;display:flex;align-items:center;gap:12px;min-width:0}.dot{width:44px;height:44px;border-radius:8px;flex-shrink:0}.record b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}.record small{color:#9ca7b3}.record button{margin-left:auto;padding:5px 9px}.searchbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.searchbar input{flex:1;min-width:160px;padding:10px;border-radius:8px;background:#252a31;color:#f0f1f1;border:1px solid #48505a}.searchbar select{width:auto}.match{font-size:11px;color:#c9dbd0}.notice{font-size:12px;color:#c4b586}.hidden{display:none!important}details{margin-top:12px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;color:#abb8b4}
 @media(max-width:730px){.shell{padding:16px}.grid{grid-template-columns:1fr}.header{align-items:start}.card{padding:16px}}
 </style>
 </head>
 <body>
 <main class="shell">
-<header><div><div class="brand">KUMO LABS / MATERIAL INTELLIGENCE</div><div class="sub">CMF workstation · local-first research preview 0.2</div></div><div class="sub" id="runtime">● On-device analysis</div></header>
+<header><div><div class="brand">KUMO LABS / MATERIAL INTELLIGENCE</div><div class="sub">CMF workstation · local-first research preview 0.3</div></div><div class="sub" id="runtime">● On-device analysis</div></header>
 <h1>From surface to<br>material intelligence.</h1>
 <p>Discover color structure, build editable Material DNA, and curate your own CMF library. Your images stay on this device.</p>
 <div class="grid">
@@ -34,29 +34,69 @@
 <div class="controls"><button id="save" disabled>Save to library</button><button id="download" disabled class="secondary">Export JSON</button></div>
 <details><summary class="sub">Inspect Material DNA record</summary><pre id="json">Select an image to begin.</pre></details>
 </section></div>
-<section class="card library"><div class="header" style="border:0;padding:0 0 16px"><div><h2 style="margin:0">03 / Personal material library</h2><div class="sub">Metadata saved in this browser · no image files retained</div></div><button class="secondary" id="exportlib">Export library</button></div><div class="records" id="records"></div></section>
+<section class="card library"><div class="header" style="border:0;padding:0 0 16px"><div><h2 style="margin:0">03 / Personal material library</h2><div class="sub">Metadata saved in this browser · no image files retained</div></div><button class="secondary" id="exportlib">Export library</button></div><div class="searchbar"><input id="search" type="search" placeholder="Search material names or families" aria-label="Search materials"><select id="familyfilter" aria-label="Filter material family"><option value="">All families</option></select><button id="importlib" class="secondary">Import JSON</button><input id="importfile" type="file" accept="application/json,.json" hidden></div><div class="records" id="records"></div></section>
 </main>
 <script type="module">
 import {analyzePixels} from '../../packages/inference-sdk/src/index.mjs';
-import {extractPalette} from '../../packages/cmf-core/src/palette.mjs';
+import {extractPalette,deltaE2000} from '../../packages/cmf-core/src/palette.mjs';
 import {validateMaterial,FAMILIES} from '../../packages/material-dna/src/index.mjs';
 const $=id=>document.getElementById(id);
 const KEY='kumo-material-library-v1';
 const library=()=>{try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch{return []}};
 const saveLibrary=items=>localStorage.setItem(KEY,JSON.stringify(items));
 let record=null,palette=[];
-for(const fam of FAMILIES.filter(x=>x!=='unknown')){const op=document.createElement('option');op.value=fam;op.textContent=fam.replace(/-/g,' ');$('family').append(op)}
+for(const fam of FAMILIES.filter(x=>x!=='unknown')){for(const id of ['family','familyfilter']){const op=document.createElement('option');op.value=fam;op.textContent=fam.replace(/-/g,' ');$(id).append(op)}}
 function downloadJSON(data,name){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500)}
 function update(){if(!record)return;const validation=validateMaterial(record);$('json').textContent=JSON.stringify(record,null,2);$('save').disabled=!validation.valid;$('download').disabled=!validation.valid;$('recognition').textContent=record.classification.family==='unknown'?'Unavailable · Manual':'Designer-authored'}
-function renderLibrary(){const root=$('records');root.replaceChildren();const all=library();if(!all.length){root.textContent='No saved materials yet. Analyze an image to begin.';root.className='records sub';return}root.className='records';for(const m of all){const card=document.createElement('div');card.className='record';const sw=document.createElement('div');sw.className='dot';sw.style.background=m.color.hex;const text=document.createElement('div');const name=document.createElement('b');name.textContent=m.source?.name||m.id;const detail=document.createElement('small');detail.textContent=m.classification.family+' · '+m.color.hex;text.append(name,detail);const del=document.createElement('button');del.className='secondary';del.textContent='×';del.setAttribute('aria-label','Remove material');del.onclick=()=>{saveLibrary(library().filter(x=>x.id!==m.id));renderLibrary()};card.append(sw,text,del);root.append(card)}}
+function renderLibrary(){
+ const root=$('records');root.replaceChildren();
+ const filter=$('familyfilter').value,q=$('search').value.trim().toLowerCase();
+ const records=library().filter(m=>(!filter||m.classification.family===filter)&&(!q||(m.source?.name||'').toLowerCase().includes(q)||m.classification.family.includes(q)));
+ if(record?.color?.lab)records.sort((a,b)=>deltaE2000(record.color.lab,a.color.lab)-deltaE2000(record.color.lab,b.color.lab));
+ if(!records.length){root.textContent='No matching materials. Analyze an image or import your library.';root.className='records sub';return}
+ root.className='records';
+ for(const m of records){
+  const card=document.createElement('div');card.className='record';
+  const sw=document.createElement('div');sw.className='dot';sw.style.background=m.color.hex;
+  const text=document.createElement('div'),name=document.createElement('b');name.textContent=m.source?.name||m.id;
+  const detail=document.createElement('small');detail.textContent=m.classification.family+' · '+m.color.hex;
+  text.append(name,detail);
+  if(record?.color?.lab&&m.color?.lab){
+   const match=document.createElement('div');match.className='match';
+   match.textContent='ΔE00 '+deltaE2000(record.color.lab,m.color.lab).toFixed(1)+' vs current';
+   text.append(match);
+  }
+  const del=document.createElement('button');del.className='secondary';del.textContent='×';del.setAttribute('aria-label','Remove material');
+  del.onclick=()=>{saveLibrary(library().filter(x=>x.id!==m.id));renderLibrary()};
+  card.append(sw,text,del);root.append(card);
+ }
+}
 async function analyze(file){if(!file||!file.type.startsWith('image/'))return;let bmp;try{bmp=await createImageBitmap(file);const scale=Math.min(1,640/Math.max(bmp.width,bmp.height));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bmp.width*scale));canvas.height=Math.max(1,Math.round(bmp.height*scale));const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(bmp,0,0,canvas.width,canvas.height);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
 record=analyzePixels(pixels,{sourceName:file.name,stride:5});palette=extractPalette(pixels,{stride:5,maxColors:6});record.palette=palette;record.id=crypto.randomUUID();$('primary').textContent=record.color.hex;$('lab').textContent=record.color.lab.map(x=>x.toFixed(1)).join(' / ');$('family').value='unknown';$('palette').replaceChildren();
 for(const c of palette){const d=document.createElement('div');d.className='chip';d.style.background=c.hex;d.title=c.hex+' · '+c.share+'%';d.textContent=c.hex;d.onclick=()=>navigator.clipboard?.writeText(c.hex);$('palette').append(d)}
-const url=URL.createObjectURL(file);const preview=$('preview');preview.onload=()=>URL.revokeObjectURL(url);preview.src=url;preview.hidden=false;update()}catch(e){console.error(e);alert('Unable to read this image.')}finally{bmp?.close?.()}}
+const url=URL.createObjectURL(file);const preview=$('preview');preview.onload=()=>URL.revokeObjectURL(url);preview.src=url;preview.hidden=false;update();renderLibrary()}catch(e){console.error(e);alert('Unable to read this image.')}finally{bmp?.close?.()}}
 $('file').onchange=e=>analyze(e.target.files[0]);const drop=$('drop');drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag')};drop.ondragleave=()=>drop.classList.remove('drag');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');analyze(e.dataTransfer.files[0])};
 $('family').onchange=()=>{if(!record)return;record.classification={family:$('family').value,finish:null,confidence:null,verified:false};record.provenance={level:'designer-authored',modelVersion:null};update()};
 $('save').onclick=()=>{if(!record)return;const all=library().filter(x=>x.id!==record.id);all.unshift(record);try{saveLibrary(all.slice(0,150));renderLibrary()}catch{alert('Local storage is full; export your library before adding more.')}};
-$('download').onclick=()=>record&&downloadJSON(record,'kumo-material-dna.json');$('exportlib').onclick=()=>downloadJSON(library(),'kumo-material-library.json');renderLibrary();
+$('download').onclick=()=>record&&downloadJSON(record,'kumo-material-dna.json');$('exportlib').onclick=()=>downloadJSON(library(),'kumo-material-library.json');$('search').addEventListener('input',renderLibrary);
+$('familyfilter').addEventListener('change',renderLibrary);
+$('importlib').onclick=()=>$('importfile').click();
+$('importfile').onchange=async e=>{
+ const input=e.target.files?.[0];if(!input)return;
+ try{
+  if(input.size>5_000_000)throw new Error('Import exceeds 5 MB');
+  const parsed=JSON.parse(await input.text());
+  if(!Array.isArray(parsed)||parsed.length>1000)throw new Error('Expected an array of at most 1000 materials');
+  const valid=parsed.filter(m=>validateMaterial(m).valid);
+  if(!valid.length)throw new Error('No valid Material DNA records found');
+  const existing=library(),byId=new Map(existing.map(m=>[m.id,m]));
+  for(const m of valid)byId.set(m.id,m);
+  saveLibrary([...byId.values()].slice(0,150));renderLibrary();
+  alert('Imported '+valid.length+' validated material records.');
+ }catch(error){alert('Import failed: '+error.message)}
+ e.target.value='';
+};
+renderLibrary();
 if('serviceWorker'in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./sw.js').catch(console.warn);
 </script>
 </body></html>
