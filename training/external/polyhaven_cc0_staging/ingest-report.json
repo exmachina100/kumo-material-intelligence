@@ -1,0 +1,8 @@
+{
+  "requested": 14,
+  "selected": 14,
+  "available": 14,
+  "new_or_refreshed": 14,
+  "failures": [],
+  "note": "All material families need human review before supervised training."
+}
