@@ -61,5 +61,16 @@ jobs:
             echo "No new generated images to commit"
           else
             git commit -m "Add generated raster CMF samples and CC0 staging images"
-            git push origin HEAD:main
+            for attempt in 1 2 3; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                echo "Committed images on main"
+                exit 0
+              fi
+              echo "Non-fast-forward push on attempt ${attempt}; retrying"
+              sleep 2
+            done
+            echo "Unable to push image commit after retries" >&2
+            exit 1
           fi
