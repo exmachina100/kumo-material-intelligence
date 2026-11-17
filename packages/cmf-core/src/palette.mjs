@@ -36,7 +36,7 @@ export function deltaE2000(lab1,lab2){
  const Lbar=(L1+L2)/2,Cbarp=(Cp1+Cp2)/2;
  let hbar;if(Cp1*Cp2===0)hbar=h1+h2;else if(Math.abs(h1-h2)<=180)hbar=(h1+h2)/2;else hbar=(h1+h2+ (h1+h2<360?360:-360))/2;
  const T=1-.17*Math.cos((hbar-30)*rad)+.24*Math.cos(2*hbar*rad)+.32*Math.cos((3*hbar+6)*rad)-.20*Math.cos((4*hbar-63)*rad);
- const dTheta=30*Math.exp(-((hbar-275)/25)**2),Rc=2*Math.sqrt(Cbarp**7/(Cbarp**7+25**7));
+ const dTheta=30*Math.exp(-(((hbar-275)/25)**2)),Rc=2*Math.sqrt(Cbarp**7/(Cbarp**7+25**7));
  const Sl=1+.015*(Lbar-50)**2/Math.sqrt(20+(Lbar-50)**2),Sc=1+.045*Cbarp,Sh=1+.015*Cbarp*T;
  const Rt=-Math.sin(2*dTheta*rad)*Rc;
  const x=dL/Sl,y=dC/Sc,z=dH/(Sh*Cbarp||1);
