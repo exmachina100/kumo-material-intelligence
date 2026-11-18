@@ -29,6 +29,9 @@ jobs:
           cp -R packages/cmf-core site/packages/cmf-core
           cp -R packages/material-dna site/packages/material-dna
           cp -R packages/inference-sdk site/packages/inference-sdk
+          mkdir -p site/training/external
+          cp -R training/external/polyhaven_cc0_staging site/training/external/polyhaven_cc0_staging
+          cp -R training/external/ambientcg_cc0_staging site/training/external/ambientcg_cc0_staging
           cp models/research/manifest.json models/research/labels.json models/research/vision-probe-research.onnx site/models/research/
           cp models/research-expanded/manifest.json models/research-expanded/labels.json models/research-expanded/vision-probe-research.onnx site/models/research-expanded/
           cp node_modules/onnxruntime-web/dist/ort.min.js site/vendor/ort/
