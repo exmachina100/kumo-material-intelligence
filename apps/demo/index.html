@@ -29,6 +29,7 @@
 <div class="field"><span>Analysis method</span><b>Deterministic / Local</b></div>
 <div class="field"><span>Recognition</span><b id="recognition">Unavailable · Manual</b></div>
 </div>
+<div class="field" id="captureQuality" style="margin:12px 0"><span>Capture preflight</span><b id="qualityStatus">Awaiting photo</b><div class="sub" id="qualityHints" style="margin-top:6px">Lighting, highlights and visual detail checked locally.</div></div>
 <label for="family" class="sub">Designer material classification</label>
 <select id="family"><option value="unknown">Unknown / unassigned</option></select>
 <div class="controls"><button id="save" disabled>Save to library</button><button id="download" disabled class="secondary">Export JSON</button></div>
@@ -39,6 +40,7 @@
 <script type="module">
 import {analyzePixels} from '../../packages/inference-sdk/src/index.mjs';
 import {extractPalette,deltaE2000} from '../../packages/cmf-core/src/palette.mjs';
+import {inspectImageQuality} from '../../packages/cmf-core/src/image-quality.mjs';
 import {validateMaterial,FAMILIES} from '../../packages/material-dna/src/index.mjs';
 const $=id=>document.getElementById(id);
 const KEY='kumo-material-library-v1';
@@ -72,7 +74,15 @@ function renderLibrary(){
  }
 }
 async function analyze(file){if(!file||!file.type.startsWith('image/'))return;let bmp;try{bmp=await createImageBitmap(file);const scale=Math.min(1,640/Math.max(bmp.width,bmp.height));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bmp.width*scale));canvas.height=Math.max(1,Math.round(bmp.height*scale));const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(bmp,0,0,canvas.width,canvas.height);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-record=analyzePixels(pixels,{sourceName:file.name,stride:5});palette=extractPalette(pixels,{stride:5,maxColors:6});record.palette=palette;record.id=crypto.randomUUID();$('primary').textContent=record.color.hex;$('lab').textContent=record.color.lab.map(x=>x.toFixed(1)).join(' / ');$('family').value='unknown';$('palette').replaceChildren();
+record=analyzePixels(pixels,{sourceName:file.name,stride:5});palette=extractPalette(pixels,{stride:5,maxColors:6});record.palette=palette;record.id=crypto.randomUUID();
+const captureQuality=inspectImageQuality(pixels,canvas.width,canvas.height);
+record.captureQuality=captureQuality;
+$('qualityStatus').textContent=captureQuality.warnings.length?
+ captureQuality.warnings.length+' capture advisory'+(captureQuality.warnings.length===1?'':'ies'):
+ 'No capture warnings';
+$('qualityHints').textContent=captureQuality.warnings.length?
+ captureQuality.warnings.map(w=>w.text).join(' · '):
+ 'Capture checked. Appearance remains visually estimated, not physically verified.';$('primary').textContent=record.color.hex;$('lab').textContent=record.color.lab.map(x=>x.toFixed(1)).join(' / ');$('family').value='unknown';$('palette').replaceChildren();
 for(const c of palette){const d=document.createElement('div');d.className='chip';d.style.background=c.hex;d.title=c.hex+' · '+c.share+'%';d.textContent=c.hex;d.onclick=()=>navigator.clipboard?.writeText(c.hex);$('palette').append(d)}
 const url=URL.createObjectURL(file);const preview=$('preview');preview.onload=()=>URL.revokeObjectURL(url);preview.src=url;preview.hidden=false;update();renderLibrary()}catch(e){console.error(e);alert('Unable to read this image.')}finally{bmp?.close?.()}}
 $('file').onchange=e=>analyze(e.target.files[0]);$('camera').onclick=()=>$('cameraFile').click();$('cameraFile').onchange=e=>analyze(e.target.files[0]);const drop=$('drop');drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag')};drop.ondragleave=()=>drop.classList.remove('drag');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');analyze(e.dataTransfer.files[0])};
