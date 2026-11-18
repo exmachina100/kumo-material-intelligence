@@ -22,6 +22,7 @@ try{
  console.log(JSON.stringify({status,suggested,detail,errors}));
  assert.ok(!status.includes('Vision unavailable'),'Actual ONNX inference failed: '+status);
  assert.match(detail,/crop agreement/);
+ assert.match(await page.locator('#aiAlternatives').textContent(),/Other visual possibilities:/);
  assert.equal(await page.locator('#recognition').textContent(),'Unknown / unconfirmed');
  if(await page.locator('#acceptAI').isEnabled()){
   await page.locator('#acceptAI').click();
