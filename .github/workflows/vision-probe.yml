@@ -5,6 +5,7 @@ on:
     paths:
       - 'training/experiments/train_vision_probe.py'
       - 'training/experiments/vision_dataset.py'
+      - 'training/external/polyhaven_cc0_staging/provenance.json'
       - '.github/workflows/vision-probe.yml'
 permissions:
   contents: read
@@ -22,6 +23,19 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install "numpy>=1.26,<3" "Pillow>=10,<13" "scikit-learn>=1.5,<2" "onnx>=1.16,<2" "onnxruntime>=1.19,<2"
           python -m pip install "torch>=2.4,<3" "torchvision>=0.19,<1" --index-url https://download.pytorch.org/whl/cpu
+      - name: Inspect verified research class counts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+          from collections import Counter
+          sys.path.insert(0,'training/experiments')
+          from vision_dataset import select_catalog_samples
+          samples=select_catalog_samples(Path('training/external/polyhaven_cc0_staging'),8)
+          counts=Counter(x['weak_label'] for x in samples)
+          print('Research class counts:',dict(sorted(counts.items())))
+          assert len(counts)>=6
+          PY
       - name: Run pretrained compact vision probe
         run: python training/experiments/train_vision_probe.py
       - name: Enforce research-only artifact gate
@@ -36,6 +50,7 @@ jobs:
           assert report["expert_reviewed"] is False
           assert report.get("onnx_export",{}).get("success") is True
           assert set(json.loads((out/"labels.json").read_text())) == set(report["classes"])
+          assert len(report['classes'])>=6
           print("Pretrained vision research prototype produced and validated")
           PY
       - uses: actions/upload-artifact@v4
