@@ -30,7 +30,7 @@ export function mergeReviews(current,incoming,{replace=false}={}){
 export function exportReviewBundle(reviews){
  const values=reviews instanceof Map?[...reviews.values()]:reviews;
  if(!Array.isArray(values))throw new TypeError('Expected review map or array');
- return {schemaVersion:'0.1.0',source:'Poly Haven',exported_at:new Date().toISOString(),reviews:values};
+ return {schemaVersion:'0.1.0',source:'Kumo CMF licensed references',exported_at:new Date().toISOString(),reviews:values};
 }
 
 export function summarizeReviewQuality(items,reviews){
