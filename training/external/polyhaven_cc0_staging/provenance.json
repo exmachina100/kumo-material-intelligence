@@ -472,6 +472,73 @@
     }
   },
   {
+    "asset_id": "black_painted_planks",
+    "path": "black_painted_planks.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/black_painted_planks",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/black_painted_planks.png?width=256&height=256&format=webp&v=76186f54",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Black Painted Planks",
+    "catalog_category": "Wood/Boards & Planks/Painted Planks",
+    "catalog_tags": [
+      "painted",
+      "painted wood",
+      "wood",
+      "wooden planks",
+      "weathered",
+      "scratched",
+      "worn",
+      "grain",
+      "wood grain",
+      "distressed wood",
+      "timber",
+      "plank"
+    ],
+    "catalog_suggestion": "coating",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:black_painted_planks",
+    "sha256": "3f44936fda8223aa9df39a183a45c3c20dd4e85a857590b46f0c47855c130512",
+    "source_author": {
+      "Dimitrios Savva": "All"
+    }
+  },
+  {
+    "asset_id": "blue_floor_tiles_01",
+    "path": "blue_floor_tiles_01.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/blue_floor_tiles_01",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/blue_floor_tiles_01.png?width=256&height=256&format=webp&v=52ac9a5a",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Blue Floor Tiles 01",
+    "catalog_category": "Brick & Block/Clay Brick/Running-Bond",
+    "catalog_tags": [
+      "floor",
+      "moss",
+      "damp",
+      "wet",
+      "bright",
+      "walkway",
+      "pavement"
+    ],
+    "catalog_suggestion": "ceramic",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:blue_floor_tiles_01",
+    "sha256": "866332757f46136c2b04c5be28707e66f1fd29275e48aba529b7d27ddbc30946",
+    "source_author": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
     "asset_id": "blue_metal_plate",
     "path": "blue_metal_plate.jpg",
     "source": "Poly Haven",
@@ -502,6 +569,35 @@
     "image_role": "thumbnail_preview",
     "sample_group": "polyhaven:blue_metal_plate",
     "sha256": "bec13c25cdf5ba772794fff4f48ee521de121ef70339aa2f9edeedb83faeea7d",
+    "source_author": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset_id": "blue_painted_planks",
+    "path": "blue_painted_planks.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/blue_painted_planks",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/blue_painted_planks.png?width=256&height=256&format=webp&v=063cb6b4",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Blue Painted Planks",
+    "catalog_category": "Wood/Boards & Planks/Painted Planks",
+    "catalog_tags": [
+      "planks",
+      "painted",
+      "house",
+      "wooden",
+      "peeling"
+    ],
+    "catalog_suggestion": "coating",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:blue_painted_planks",
+    "sha256": "926ae40d903e18506ce658c5a8bf29026cc1e86700010f88fe17a8b6b2316cb5",
     "source_author": {
       "Rob Tuytel": "All"
     }
@@ -780,6 +876,102 @@
     }
   },
   {
+    "asset_id": "brown_mud_03",
+    "path": "brown_mud_03.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/brown_mud_03",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/brown_mud_03.png?width=256&height=256&format=webp&v=fec4283c",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Brown Mud 03",
+    "catalog_category": "Ground & Terrain/Soil & Mud/Wet Mud",
+    "catalog_tags": [
+      "mud",
+      "dirt",
+      "stones",
+      "dry",
+      "ground",
+      "soil",
+      "wet soil",
+      "footprints",
+      "earth",
+      "muddy surface",
+      "wet patches",
+      "mud clumps",
+      "loose earth"
+    ],
+    "catalog_suggestion": "stone",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:brown_mud_03",
+    "sha256": "d26aca8bb3133410c2f675e525b84351f4baf61c0dbdb716a1aea18a57e49c18",
+    "source_author": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset_id": "brown_mud_dry",
+    "path": "brown_mud_dry.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/brown_mud_dry",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/brown_mud_dry.png?width=256&height=256&format=webp&v=c3462380",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Brown Mud Dry",
+    "catalog_category": "Ground & Terrain/Soil & Mud/Compacted Soil",
+    "catalog_tags": [
+      "mud",
+      "dirt",
+      "stones",
+      "dry",
+      "ground"
+    ],
+    "catalog_suggestion": "stone",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:brown_mud_dry",
+    "sha256": "5a42cff3e2bb2cc1c04b2ec6cf503f209cd49a68cd7bd6c7c2b5e089456838c6",
+    "source_author": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset_id": "brown_mud_leaves_01",
+    "path": "brown_mud_leaves_01.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/brown_mud_leaves_01",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/brown_mud_leaves_01.png?width=256&height=256&format=webp&v=ce084bc9",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Brown Mud Leaves 01",
+    "catalog_category": "Ground & Terrain/Forest Floor/Leaf Litter",
+    "catalog_tags": [
+      "grass",
+      "mud",
+      "moss",
+      "stones",
+      "orange",
+      "forest"
+    ],
+    "catalog_suggestion": "stone",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:brown_mud_leaves_01",
+    "sha256": "e5f3ee1c0a48828fca4f620161a7762929efc04fd407b4b16520290e630ae889",
+    "source_author": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
     "asset_id": "brown_planks_03",
     "path": "brown_planks_03.jpg",
     "source": "Poly Haven",
@@ -827,7 +1019,7 @@
       "house",
       "suburb"
     ],
-    "catalog_suggestion": "wood",
+    "catalog_suggestion": "coating",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -994,6 +1186,44 @@
     "sha256": "914e6a9036201fb4667c1e83e4e425702102884413de1911e0ec92027f61bf8b",
     "source_author": {
       "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset_id": "checkered_pavement_tiles",
+    "path": "checkered_pavement_tiles.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/checkered_pavement_tiles",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/checkered_pavement_tiles.png?width=256&height=256&format=webp&v=fe94904b",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Checkered Pavement Tiles",
+    "catalog_category": "Brick & Block/Concrete Block & Paver/Interlocking Pavers",
+    "catalog_tags": [
+      "rough",
+      "outdoor",
+      "outdoor flooring",
+      "concrete",
+      "tiled",
+      "pavement",
+      "urban",
+      "sidewalk",
+      "rough  ",
+      "checkerboard",
+      "sidewalk texture",
+      "pavement patterned",
+      "pavers",
+      "square pattern"
+    ],
+    "catalog_suggestion": "ceramic",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:checkered_pavement_tiles",
+    "sha256": "cb21c337f2cda2dc0216ed08b54077c1530adba82544a3e772f780ed2f815623",
+    "source_author": {
+      "Amal Kumar": "All"
     }
   },
   {
@@ -1321,6 +1551,116 @@
     "sha256": "504bcb53a477c5f4ba960269a3f7974c833f225e34400dd139e2e0e5c05f47dc",
     "source_author": {
       "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset_id": "concrete_tile_facade",
+    "path": "concrete_tile_facade.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/concrete_tile_facade",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/concrete_tile_facade.png?width=256&height=256&format=webp&v=a9761a70",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Concrete Tile Facade",
+    "catalog_category": "Brick & Block/Concrete Block & Paver/Facade Panels",
+    "catalog_tags": [
+      "concrete",
+      "wall",
+      "walling",
+      "tiles",
+      "tiled wall",
+      "grooved",
+      "square tiles",
+      "square",
+      "building facade",
+      "urban design",
+      "modern design"
+    ],
+    "catalog_suggestion": "ceramic",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:concrete_tile_facade",
+    "sha256": "b7828e5e4043b8127b98018789ce669a3f18b3f1c963c1c40684d19bd77e7aed",
+    "source_author": {
+      "Charlotte Baglioni": "All"
+    }
+  },
+  {
+    "asset_id": "concrete_tiles",
+    "path": "concrete_tiles.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/concrete_tiles",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/concrete_tiles.png?width=256&height=256&format=webp&v=2e5d1e8d",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Concrete Tiles",
+    "catalog_category": "Brick & Block/Concrete Block & Paver",
+    "catalog_tags": [
+      "rough",
+      "old",
+      "weathered",
+      "concrete",
+      "pattern",
+      "pavement patterned",
+      "coarse",
+      "outdoor flooring",
+      "urban",
+      "outdoor",
+      "exterior",
+      "cement",
+      "pavers",
+      "stamped concrete",
+      "patterned",
+      "worndown"
+    ],
+    "catalog_suggestion": "ceramic",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:concrete_tiles",
+    "sha256": "fdf8a618c0a1d938488864e958dbddc145869b89823dac48b83e398509a3f875",
+    "source_author": {
+      "Dimitrios Savva": "All"
+    }
+  },
+  {
+    "asset_id": "concrete_tiles_02",
+    "path": "concrete_tiles_02.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/concrete_tiles_02",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/concrete_tiles_02.png?width=256&height=256&format=webp&v=05a8f96c",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Concrete Tiles 02",
+    "catalog_category": "Brick & Block/Concrete Block & Paver",
+    "catalog_tags": [
+      "concrete",
+      "rough concrete",
+      "outdoor",
+      "pavement",
+      "walkway",
+      "sidewalk texture",
+      "sidewalk",
+      "urban",
+      "outdoor flooring",
+      "pavers",
+      "outdoor walkway"
+    ],
+    "catalog_suggestion": "ceramic",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:concrete_tiles_02",
+    "sha256": "0163df4c8198fb2c82ceec103e5a9d96f2e73257dae0d65bdcd61bf038f06278",
+    "source_author": {
+      "Charlotte Baglioni": "All"
     }
   },
   {
@@ -1826,7 +2166,7 @@
       "napped",
       "woolly"
     ],
-    "catalog_suggestion": "leather",
+    "catalog_suggestion": "textile",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -1862,7 +2202,7 @@
       "napped",
       "woolly"
     ],
-    "catalog_suggestion": "leather",
+    "catalog_suggestion": "textile",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -2206,7 +2546,7 @@
       "discolored",
       "faded"
     ],
-    "catalog_suggestion": "leather",
+    "catalog_suggestion": "textile",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -2277,6 +2617,39 @@
     "source_author": {
       "Matterfield": "Photography",
       "Jenelle van Heerden": "Processing"
+    }
+  },
+  {
+    "asset_id": "distressed_painted_planks",
+    "path": "distressed_painted_planks.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/distressed_painted_planks",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/distressed_painted_planks.png?width=256&height=256&format=webp&v=01eb2f54",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Distressed Painted Planks",
+    "catalog_category": "Wood/Boards & Planks/Painted Planks",
+    "catalog_tags": [
+      "weathered",
+      "old",
+      "wood",
+      "planks",
+      "wooden planks",
+      "rustic",
+      "distressed",
+      "distressed wood",
+      "painted"
+    ],
+    "catalog_suggestion": "coating",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:distressed_painted_planks",
+    "sha256": "9525766a84ab435a93b71e383af3e6eb42f93e5a90b841b676192997c1c06ba2",
+    "source_author": {
+      "Rob Tuytel": "All"
     }
   },
   {
@@ -2534,7 +2907,7 @@
       "fleece",
       "napped"
     ],
-    "catalog_suggestion": "leather",
+    "catalog_suggestion": "textile",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -2668,6 +3041,43 @@
     "image_role": "thumbnail_preview",
     "sample_group": "polyhaven:floor_tiles_08",
     "sha256": "508995f30a2fcf8a7247f2dae9b2b18371af939fa476c4280f9f1587e090ebf6",
+    "source_author": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset_id": "floor_tiles_09",
+    "path": "floor_tiles_09.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/floor_tiles_09",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/floor_tiles_09.png?width=256&height=256&format=webp&v=c386dca0",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Floor Tiles 09",
+    "catalog_category": "Brick & Block/Concrete Block & Paver/Interlocking Pavers",
+    "catalog_tags": [
+      "regular",
+      "square",
+      "pavement",
+      "soviet",
+      "sidewalk texture",
+      "concrete",
+      "concrete tiles",
+      "grid pattern",
+      "grid",
+      "dirty",
+      "rough",
+      "uneven",
+      "urban"
+    ],
+    "catalog_suggestion": "ceramic",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:floor_tiles_09",
+    "sha256": "da23292c430334d7055b6bf3e2f88ae1c8dd0b1a0447609758885b009a63f210",
     "source_author": {
       "Rob Tuytel": "All"
     }
@@ -3084,6 +3494,34 @@
     }
   },
   {
+    "asset_id": "green_rough_planks",
+    "path": "green_rough_planks.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/green_rough_planks",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/green_rough_planks.png?width=256&height=256&format=webp&v=22076de6",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Green Rough Planks",
+    "catalog_category": "Wood/Boards & Planks/Painted Planks",
+    "catalog_tags": [
+      "planks",
+      "painted",
+      "peeling",
+      "weathered"
+    ],
+    "catalog_suggestion": "coating",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:green_rough_planks",
+    "sha256": "b6b91a322f3336f42e1678ea265e3fae3b579055e705372db6a806fd9525d592",
+    "source_author": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
     "asset_id": "grey_plaster",
     "path": "grey_plaster.jpg",
     "source": "Poly Haven",
@@ -3207,6 +3645,74 @@
     }
   },
   {
+    "asset_id": "herringbone_concrete_tile",
+    "path": "herringbone_concrete_tile.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/herringbone_concrete_tile",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/herringbone_concrete_tile.png?width=256&height=256&format=webp&v=64f7008c",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Herringbone Concrete Tile",
+    "catalog_category": "Brick & Block/Concrete Block & Paver/Herringbone Pavers",
+    "catalog_tags": [
+      "weathered",
+      "rough",
+      "discolored",
+      "concrete",
+      "herringbone",
+      "herringbone pattern",
+      "patterned concrete",
+      "weatherbeaten",
+      "scuffed"
+    ],
+    "catalog_suggestion": "ceramic",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:herringbone_concrete_tile",
+    "sha256": "6c48aead03f6379101223f6ded800d3932f5022c705841e195791a74b138b19a",
+    "source_author": {
+      "Charlotte Baglioni": "All"
+    }
+  },
+  {
+    "asset_id": "herringbone_concrete_tile_03",
+    "path": "herringbone_concrete_tile_03.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/herringbone_concrete_tile_03",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/herringbone_concrete_tile_03.png?width=256&height=256&format=webp&v=2e04f8a3",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Herringbone Concrete Tile 03",
+    "catalog_category": "Brick & Block/Concrete Block & Paver/Herringbone Pavers",
+    "catalog_tags": [
+      "herringbone",
+      "weathered",
+      "wet patches",
+      "herringbone pattern",
+      "exterior",
+      "urban",
+      "concrete pavers",
+      "concrete blocks",
+      "mottled",
+      "discolored",
+      "retaining wall"
+    ],
+    "catalog_suggestion": "ceramic",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:herringbone_concrete_tile_03",
+    "sha256": "835e385ee136280e4e88aaeb14dce4c8e2fda83f827ddafeb54af42676068a7e",
+    "source_author": {
+      "Charlotte Baglioni": "All"
+    }
+  },
+  {
     "asset_id": "herringbone_parquet",
     "path": "herringbone_parquet.jpg",
     "source": "Poly Haven",
@@ -3266,7 +3772,7 @@
       "textile ",
       "sackcloth"
     ],
-    "catalog_suggestion": "leather",
+    "catalog_suggestion": "textile",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -3302,7 +3808,7 @@
       "textile ",
       "sackcloth"
     ],
-    "catalog_suggestion": "leather",
+    "catalog_suggestion": "textile",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -3676,7 +4182,7 @@
       "square",
       "even"
     ],
-    "catalog_suggestion": "concrete",
+    "catalog_suggestion": "ceramic",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -3741,7 +4247,7 @@
       "grid",
       "moss"
     ],
-    "catalog_suggestion": "concrete",
+    "catalog_suggestion": "ceramic",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -4343,6 +4849,35 @@
     }
   },
   {
+    "asset_id": "moss_wood",
+    "path": "moss_wood.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/moss_wood",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/moss_wood.png?width=256&height=256&format=webp&v=95661d3c",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Moss Wood",
+    "catalog_category": "Wood/Boards & Planks/Weathered Planks",
+    "catalog_tags": [
+      "moss",
+      "planks",
+      "rough",
+      "old",
+      "green"
+    ],
+    "catalog_suggestion": "wood",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:moss_wood",
+    "sha256": "8785ca2b8141631b52e6e3f533ba5b22d88fb5e2c6d4dc229c1eae6426d76d5e",
+    "source_author": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
     "asset_id": "mossy_rock",
     "path": "mossy_rock.jpg",
     "source": "Poly Haven",
@@ -4926,6 +5461,40 @@
     }
   },
   {
+    "asset_id": "plank_flooring_04",
+    "path": "plank_flooring_04.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/plank_flooring_04",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/plank_flooring_04.png?width=256&height=256&format=webp&v=33894c37",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Plank Flooring 04",
+    "catalog_category": "Wood/Boards & Planks/Finished & Varnished",
+    "catalog_tags": [
+      "wooden planks",
+      "plank flooring ",
+      "wooden flooring ",
+      "plank",
+      "timber",
+      "coated",
+      "varnished",
+      "wooden floor",
+      "wood",
+      "grain"
+    ],
+    "catalog_suggestion": "wood",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:plank_flooring_04",
+    "sha256": "fc7c202cdf27451a69375338554a500ba2033a99f2e6b8f17137cff7654f7504",
+    "source_author": {
+      "Dimitrios Savva": "All"
+    }
+  },
+  {
     "asset_id": "planks_brown_10",
     "path": "planks_brown_10.jpg",
     "source": "Poly Haven",
@@ -4955,6 +5524,41 @@
     }
   },
   {
+    "asset_id": "plaster_brick_pattern",
+    "path": "plaster_brick_pattern.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/plaster_brick_pattern",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/plaster_brick_pattern.png?width=256&height=256&format=webp&v=0aa6a105",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Plaster Brick Pattern",
+    "catalog_category": "Concrete/Plaster & Stucco/Plaster Over Brick & Stone",
+    "catalog_tags": [
+      "rough",
+      "weathered",
+      "wall",
+      "plastered",
+      "outdoor",
+      "patterned concrete",
+      "patterned",
+      "coarse",
+      "blocks",
+      "brick",
+      "bricks"
+    ],
+    "catalog_suggestion": "concrete",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:plaster_brick_pattern",
+    "sha256": "e66f40321bac0d996f3aceed767523c0ff8552ba8d1d1047853fa82ece25bf65",
+    "source_author": {
+      "Amal Kumar": "All"
+    }
+  },
+  {
     "asset_id": "plaster_grey_04",
     "path": "plaster_grey_04.jpg",
     "source": "Poly Haven",
@@ -4977,6 +5581,49 @@
     "image_role": "thumbnail_preview",
     "sample_group": "polyhaven:plaster_grey_04",
     "sha256": "b4bfe90988cb30fc5778933c13a9183650f2e10977eb4542555d2a965630233f",
+    "source_author": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset_id": "plastered_stone_wall",
+    "path": "plastered_stone_wall.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/plastered_stone_wall",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/plastered_stone_wall.png?width=256&height=256&format=webp&v=bbc39d7d",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Plastered Stone Wall",
+    "catalog_category": "Concrete/Plaster & Stucco/Plaster Over Brick & Stone",
+    "catalog_tags": [
+      "rough",
+      "weathered",
+      "chipped",
+      "wall",
+      "damaged",
+      "cracked",
+      "discolored",
+      "worn",
+      "concrete",
+      "scratched",
+      "plaster",
+      "cement",
+      "rocks",
+      "cracked cement",
+      "scuffed",
+      "plastered",
+      "crumbling",
+      "stone",
+      "exterior"
+    ],
+    "catalog_suggestion": "concrete",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:plastered_stone_wall",
+    "sha256": "f9e686ca6f00e56e0f855c5493682b06d8b1d3200e32cf2b4baa0c6de4088bde",
     "source_author": {
       "Rob Tuytel": "All"
     }
@@ -5348,7 +5995,7 @@
       "matelasse",
       "complex weave"
     ],
-    "catalog_suggestion": "leather",
+    "catalog_suggestion": "textile",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -5396,6 +6043,39 @@
     "sha256": "6583fe193e6cd39bb61f8c9aea508a6507b100355ed1d5832c6c67fce5567ba0",
     "source_author": {
       "Dimitrios Savva": "All"
+    }
+  },
+  {
+    "asset_id": "rectangular_facade_tiles",
+    "path": "rectangular_facade_tiles.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/rectangular_facade_tiles",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/rectangular_facade_tiles.png?width=256&height=256&format=webp&v=dbd30dc7",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Rectangular Facade Tiles",
+    "catalog_category": "Brick & Block/Concrete Block & Paver/Facade Panels",
+    "catalog_tags": [
+      "tiles",
+      "rectangular",
+      "building facade",
+      "wall",
+      "walling",
+      "urban design",
+      "exterior",
+      "concrete",
+      "aggregate"
+    ],
+    "catalog_suggestion": "ceramic",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:rectangular_facade_tiles",
+    "sha256": "a986b7452936bdd05b7c8d52cf4ddccdc45d5be1deb9f7241f6fc09d950f8d06",
+    "source_author": {
+      "Charlotte Baglioni": "All"
     }
   },
   {
@@ -5489,7 +6169,7 @@
       "corded velveteen",
       "wales"
     ],
-    "catalog_suggestion": "leather",
+    "catalog_suggestion": "textile",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -5744,6 +6424,51 @@
     "image_role": "thumbnail_preview",
     "sample_group": "polyhaven:rocky_trail",
     "sha256": "cee67861b91aca76588c9706e2d612ee0ac863ce2c1370eca409c647f8b822b0",
+    "source_author": {
+      "Amal Kumar": "All"
+    }
+  },
+  {
+    "asset_id": "rocky_trail_02",
+    "path": "rocky_trail_02.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/rocky_trail_02",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/rocky_trail_02.png?width=256&height=256&format=webp&v=b7f4e08b",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Rocky Trail 02",
+    "catalog_category": "Ground & Terrain/Rocky Ground/Rocky Paths & Trails",
+    "catalog_tags": [
+      "stones",
+      "earthy",
+      "rugged",
+      "rough",
+      "terrain",
+      "gravelly",
+      "pathway",
+      "gritty",
+      "dusty",
+      "rocky",
+      "outdoors",
+      "dirt",
+      "rocks",
+      "ground",
+      "sand",
+      "gravel",
+      "footprints",
+      "dusty",
+      "dry",
+      "stony",
+      "rocky"
+    ],
+    "catalog_suggestion": "stone",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:rocky_trail_02",
+    "sha256": "acfe6875e14f9f64382c7164ff278079fb8af195fffd1dcc29c89eb48a7ac350",
     "source_author": {
       "Amal Kumar": "All"
     }
@@ -6177,7 +6902,7 @@
       "gym",
       "square"
     ],
-    "catalog_suggestion": "polymer",
+    "catalog_suggestion": "rubber",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -6208,7 +6933,7 @@
       "running",
       "rubberized"
     ],
-    "catalog_suggestion": "polymer",
+    "catalog_suggestion": "rubber",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -6243,7 +6968,7 @@
       "urban",
       "faded"
     ],
-    "catalog_suggestion": "polymer",
+    "catalog_suggestion": "rubber",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -6892,6 +7617,43 @@
     }
   },
   {
+    "asset_id": "square_tiles",
+    "path": "square_tiles.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/square_tiles",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/square_tiles.png?width=256&height=256&format=webp&v=dd624ba3",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Square Tiles",
+    "catalog_category": "Brick & Block/Concrete Block & Paver/Interlocking Pavers",
+    "catalog_tags": [
+      "rough",
+      "sidewalk",
+      "station",
+      "urban",
+      "pavers",
+      "patterned",
+      "city",
+      "pavement patterned",
+      "sidewalk texture",
+      "handmade",
+      "tiles",
+      "square",
+      "walkway"
+    ],
+    "catalog_suggestion": "ceramic",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:square_tiles",
+    "sha256": "9050f4c408953996bc08feb4b14f95bf691bbea8b97d248d64c2c7b65f80d03b",
+    "source_author": {
+      "Charlotte Baglioni": "All"
+    }
+  },
+  {
     "asset_id": "stone_brick_wall_001",
     "path": "stone_brick_wall_001.jpg",
     "source": "Poly Haven",
@@ -7221,7 +7983,7 @@
       "raised loops",
       "looped fibers"
     ],
-    "catalog_suggestion": "leather",
+    "catalog_suggestion": "textile",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -7395,7 +8157,7 @@
       "stained",
       "discolored"
     ],
-    "catalog_suggestion": "wood",
+    "catalog_suggestion": "coating",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -7406,6 +8168,43 @@
     "source_author": {
       "Dimitrios Savva": "Photography",
       "Rico Cilliers": "Processing"
+    }
+  },
+  {
+    "asset_id": "weathered_peeling_timber",
+    "path": "weathered_peeling_timber.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/weathered_peeling_timber",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/weathered_peeling_timber.png?width=256&height=256&format=webp&v=f122129f",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Weathered Peeling Timber",
+    "catalog_category": "Wood/Boards & Planks/Painted Planks",
+    "catalog_tags": [
+      "rough",
+      "weathered",
+      "wood",
+      "wood planks",
+      "peeling",
+      "peeling paint",
+      "wooden planks",
+      "rustic",
+      "plank",
+      "distressed",
+      "flaking paint",
+      "nail holes",
+      "dry"
+    ],
+    "catalog_suggestion": "coating",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:weathered_peeling_timber",
+    "sha256": "e81f45d43f34ba2f3f449d5aaa40782ade157ab8734070f14b7a4a2cfc1886d8",
+    "source_author": {
+      "Dimitrios Savva": "All"
     }
   },
   {
@@ -7511,6 +8310,38 @@
     "sha256": "bcd51a9d25b7c858b41ddcbe3202bdf6b46c9b98bf1e072b53e5b8ac880e85a7",
     "source_author": {
       "Jenelle van Heerden": "All"
+    }
+  },
+  {
+    "asset_id": "white_planks_clean",
+    "path": "white_planks_clean.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/white_planks_clean",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/white_planks_clean.png?width=256&height=256&format=webp&v=971885cd",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "White Planks Clean",
+    "catalog_category": "Wood/Boards & Planks/Painted Planks",
+    "catalog_tags": [
+      "painted",
+      "painted wood",
+      "wood",
+      "wood wall",
+      "wooden",
+      "wooden planks",
+      "white",
+      "paneling"
+    ],
+    "catalog_suggestion": "coating",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:white_planks_clean",
+    "sha256": "1bff28f4fbe5f2966e96e86ee8f23eb531573c8dc791a9f7b7ac46e40c4b136c",
+    "source_author": {
+      "Rob Tuytel": "All"
     }
   },
   {
@@ -7789,7 +8620,7 @@
       "stained",
       "wall"
     ],
-    "catalog_suggestion": "wood",
+    "catalog_suggestion": "coating",
     "training_family": "UNREVIEWED",
     "review_status": "needs_expert_review",
     "is_real_material_capture": null,
@@ -7902,6 +8733,43 @@
     "sha256": "377da12ef8447ffba00b8d00816f50325a2cf587af9ef7c28aab3e4cb616618b",
     "source_author": {
       "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset_id": "wood_table",
+    "path": "wood_table.jpg",
+    "source": "Poly Haven",
+    "source_page": "https://polyhaven.com/a/wood_table",
+    "download_url": "https://cdn.polyhaven.com/asset_img/thumbs/wood_table.png?width=256&height=256&format=webp&v=190a81e3",
+    "license": "CC0",
+    "license_page": "https://polyhaven.com/license",
+    "title": "Wood Table",
+    "catalog_category": "Wood/Boards & Planks/Finished & Varnished",
+    "catalog_tags": [
+      "pine",
+      "coated finish",
+      "coated wood",
+      "wood",
+      "planks",
+      "knots",
+      "wooden",
+      "wooden knots",
+      "pine wood",
+      "plank",
+      "wood grain",
+      "roughhewn",
+      "saw marks"
+    ],
+    "catalog_suggestion": "wood",
+    "training_family": "UNREVIEWED",
+    "review_status": "needs_expert_review",
+    "is_real_material_capture": null,
+    "capture_method": null,
+    "image_role": "thumbnail_preview",
+    "sample_group": "polyhaven:wood_table",
+    "sha256": "430dd1fc12ee8ffa2e017c729b71a014a15a79940f7142dca068c910cfae77fa",
+    "source_author": {
+      "Dimitrios Savva": "All"
     }
   },
   {
