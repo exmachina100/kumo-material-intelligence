@@ -23,8 +23,9 @@ label{display:block;font-size:12px;color:#aebac0;margin-top:10px}label input,lab
 </style></head><body><main class="app">
 <header><div><div class="eyebrow">KUMO LABS · MATERIAL INTELLIGENCE</div><div class="hint">Reference review / Dataset governance · Beta</div></div><a href="../demo/">CMF Workstation</a></header>
 <h1>Understand before training.</h1>
-<p class="hint">Review CC0 reference images from Poly Haven and ambientCG individually. Catalog suggestions are not material truth. Confirm only what you can justify visually or from reliable source evidence. Decisions are stored in this browser and can be exported as a review file; images are not uploaded.</p>
+<p class="hint">Review licensed Poly Haven and ambientCG samples separately from GPT-generated textures. Ten previously generated GPT textures have visually approved synthetic training labels based on their names and appearance; these are never physically verified or included in real-material validation/test data. Decisions are stored in this browser and can be exported as a review file; images are not uploaded.</p>
 <div class="toolbar"><div id="stats" class="chip">Loading…</div><input type="search" id="search" placeholder="Search title, category, or asset ID" aria-label="Search references">
+<select id="providerFilter" aria-label="Source filter"><option value="all">All sources</option><option value="GPT synthetic">GPT synthetic · approved labels</option><option value="Poly Haven">Poly Haven · CC0</option><option value="ambientCG">ambientCG · CC0</option></select>
 <select id="filter" aria-label="Review status"><option value="all">All</option><option value="pending">Pending</option><option value="include">Reviewed</option><option value="exclude">Excluded</option><option value="uncertain">Uncertain</option></select>
 <input type="text" id="reviewer" placeholder="Reviewer identifier" aria-label="Reviewer name or identifier">
 <button id="export">Export reviews</button><button id="import" class="muted">Import reviews</button><input id="importFile" type="file" accept=".json,application/json" hidden></div>
@@ -37,7 +38,7 @@ label{display:block;font-size:12px;color:#aebac0;margin-top:10px}label input,lab
 <label>Review notes<textarea id="notes" placeholder="What visible cues or reliable evidence support the label? Note ambiguity and surface treatment."></textarea></label>
 <div class="actions"><button id="approve">Approve label</button><button id="uncertain" class="muted">Needs more evidence</button><button id="exclude" class="muted">Exclude</button><button id="next" class="muted">Next</button></div>
 <div class="info" id="feedback"></div>
-<div class="micro">Original source: <a id="sourceLink" href="#" target="_blank" rel="noopener noreferrer">View source asset</a>. Poly Haven and ambientCG previews are offered under CC0. Source names remain attached to every review.</div>
+<div class="micro">Original source: <a id="sourceLink" href="#" target="_blank" rel="noopener noreferrer">View source asset</a>. Poly Haven and ambientCG previews are CC0; GPT examples are AI-synthetic, NOT CC0, and labeled for training-only. No label here verifies physical composition.</div>
 </section></div></main>
 <script type="module">
 import {FAMILIES} from '../../packages/material-dna/src/index.mjs';
@@ -49,16 +50,23 @@ const sourceDirs={
  'Poly Haven':new URL('../../training/external/polyhaven_cc0_staging/',location.href),
  'ambientCG':new URL('../../training/external/ambientcg_cc0_staging/',location.href)
 };
-const imageUrl=a=>new URL(encodeURIComponent(a.path),sourceDirs[a.source]).href;
+const imageUrl=a=>{
+ if(a.source==='GPT synthetic'){
+  const url=new URL(a.image_url);
+  if(url.origin!=='https://kumolabs-cmf-atlas.floot.app'||!url.pathname.startsWith('/_cdn/static/'))throw Error('Untrusted synthetic image origin');
+  return url.href;
+ }
+ return new URL(encodeURIComponent(a.path),sourceDirs[a.source]).href;
+};
 const state=()=>[...reviews.values()];
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state()))}catch{$('feedback').textContent='Browser storage is full; export your reviews.'}}
 function read(){try{for(const x of JSON.parse(localStorage.getItem(KEY)||'[]'))if(x?.asset_id)reviews.set(x.asset_id,x)}catch{}}
 function download(data,name){const u=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}
-function filtered(){const q=$('search').value.trim().toLowerCase(),f=$('filter').value;return assets.filter(a=>{const status=reviews.get(a.asset_id)?.decision||'pending';return (f==='all'||f===status)&&[a.asset_id,a.title,a.catalog_category,a.catalog_suggestion].join(' ').toLowerCase().includes(q)})}
+function filtered(){const q=$('search').value.trim().toLowerCase(),f=$('filter').value,source=$('providerFilter').value;return assets.filter(a=>{const status=reviews.get(a.asset_id)?.decision||(a.source==='GPT synthetic'&&a.review_status==='approved_synthetic_label'?'include':'pending');return (source==='all'||source===a.source)&&(f==='all'||f===status)&&[a.asset_id,a.title,a.catalog_category,a.catalog_suggestion].join(' ').toLowerCase().includes(q)})}
 function render(){
- const s=summarizeReviewQuality(assets,reviews);$('stats').textContent=assets.length+' refs · '+s.included+' approved · '+s.pending+' pending · '+s.sourceVerified+' source-verified';
+ const real=assets.filter(a=>a.source!=='GPT synthetic');const s=summarizeReviewQuality(real,reviews);const synthetic=assets.filter(a=>a.source==='GPT synthetic'&&a.review_status==='approved_synthetic_label').length;$('stats').textContent=real.length+' licensed refs · '+s.included+' human-approved · '+synthetic+' GPT synthetic labels · '+s.pending+' CC0 pending';
  const gallery=$('gallery');gallery.replaceChildren();for(const a of filtered()){
-  const tile=document.createElement('button');tile.className='tile '+(reviews.get(a.asset_id)?.decision||'')+(assets[selected]?.asset_id===a.asset_id?' current':'');
+  const tile=document.createElement('button');tile.className='tile '+(reviews.get(a.asset_id)?.decision||(a.source==='GPT synthetic'?'reviewed':''))+(assets[selected]?.asset_id===a.asset_id?' current':'');
   const img=document.createElement('img');img.loading='lazy';img.src=imageUrl(a);img.alt='Material '+a.asset_id;
   const txt=document.createElement('span');txt.textContent=a.title||a.asset_id;tile.append(img,txt);tile.onclick=()=>select(a.asset_id);gallery.append(tile);
  }
@@ -68,11 +76,11 @@ function select(id){
  const a=assets[idx],r=reviews.get(a.asset_id);
  $('preview').src=imageUrl(a);$('preview').alt=a.title||a.asset_id;
  $('name').textContent=a.title||a.asset_id;
- $('source').textContent=a.source+' · CC0 · '+(a.catalog_category||a.catalog_suggestion||'Uncategorized');
- $('hint').textContent='Catalog hint: '+(a.catalog_suggestion||'none')+' · Review: '+(r?.decision||'pending');
+ $('source').textContent=a.source==='GPT synthetic'?'GPT Image · non-CC0 · synthetic train-only':a.source+' · CC0 · '+(a.catalog_category||a.catalog_suggestion||'Uncategorized');
+ $('hint').textContent=a.source==='GPT synthetic'?'Approved synthetic visual label: '+a.family+' · Physical composition unverified':'Catalog hint: '+(a.catalog_suggestion||'none')+' · Review: '+(r?.decision||'pending');
  $('sourceLink').href=a.source_page;
- $('family').value=r?.family||'';$('evidence').value=r?.evidence||'visual-only';
- $('notes').value=r?.notes||'';$('feedback').textContent='';
+ $('family').value=r?.family||(a.source==='GPT synthetic'?a.family:'');$('evidence').value=r?.evidence||'visual-only';
+ $('notes').value=r?.notes||(a.source==='GPT synthetic'?'Approved GPT-generated visual label (synthetic train-only). Not physically measured or expert-material certified.':'');$('feedback').textContent='';
  render();
 }
 function store(decision){
@@ -86,7 +94,7 @@ function store(decision){
 function next(){if(!assets.length)return;select(assets[(selected+1)%assets.length].asset_id)}
 for(const f of FAMILIES.filter(x=>x!=='unknown')){const option=document.createElement('option');option.value=f;option.textContent=f.replaceAll('-',' ');$('family').append(option)}
 $('approve').onclick=()=>store('include');$('exclude').onclick=()=>store('exclude');$('uncertain').onclick=()=>store('uncertain');
-$('next').onclick=next;$('search').oninput=render;$('filter').onchange=render;
+$('next').onclick=next;$('search').oninput=render;$('filter').onchange=render;$('providerFilter').onchange=render;
 $('export').onclick=()=>download(exportReviewBundle(reviews),'kumo-cmf-material-reviews.json');
 $('import').onclick=()=>$('importFile').click();
 $('importFile').onchange=async e=>{
@@ -112,7 +120,10 @@ try{
   if(!Array.isArray(items))throw new Error('Invalid '+provider+' registry');
   return items.filter(a=>a.asset_id&&/^[\w-]+\.jpg$/.test(a.path)&&a.source===provider);
  }));
- assets=results.flat().sort((a,b)=>a.source.localeCompare(b.source)||a.asset_id.localeCompare(b.asset_id));
+ const gptResponse=await fetch(new URL('../../training/gpt_synthetic/approved_seed_2026-11-18.json',location.href),{cache:'no-store'});
+ const synthetic=gptResponse.ok?await gptResponse.json():{records:[]};
+ const gptItems=Array.isArray(synthetic.records)?synthetic.records.filter(a=>a.source==='GPT synthetic'&&a.synthetic_generated===true&&a.family_label_approved_for==='synthetic_train_only'&&a.review_status==='approved_synthetic_label'&&a.allowed_splits?.length===1&&a.allowed_splits[0]==='train'):[];
+ assets=[...results.flat(),...gptItems].sort((a,b)=>a.source.localeCompare(b.source)||a.asset_id.localeCompare(b.asset_id));
  if(!assets.length)throw new Error('No source images available');
  const verified=new Set(assets.map(a=>a.asset_id));
  reviews=new Map([...reviews].filter(([id,r])=>validateReview(r,verified).valid));
