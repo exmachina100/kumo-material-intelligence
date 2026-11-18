@@ -110,7 +110,7 @@ try{
   if(!response.ok)throw new Error(provider+' provenance unavailable: HTTP '+response.status);
   const items=await response.json();
   if(!Array.isArray(items))throw new Error('Invalid '+provider+' registry');
-  return items.filter(a=>a.asset_id&&/^[\\w-]+\\.jpg$/.test(a.path)&&a.source===provider);
+  return items.filter(a=>a.asset_id&&/^[\w-]+\.jpg$/.test(a.path)&&a.source===provider);
  }));
  assets=results.flat().sort((a,b)=>a.source.localeCompare(b.source)||a.asset_id.localeCompare(b.asset_id));
  if(!assets.length)throw new Error('No source images available');
