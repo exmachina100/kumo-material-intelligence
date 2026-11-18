@@ -22,7 +22,7 @@ h2{font-size:16px;margin:0 0 17px}h3{font-size:20px;margin:8px 0}.result{padding
 pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#12181b;border-radius:9px;padding:15px;font-size:12px}
 @media(max-width:720px){.grid{grid-template-columns:1fr}.card{padding:17px}}
 </style>
-<script defer src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
+<script defer src="../../vendor/ort/ort.min.js"></script>
 </head><body><main>
 <div class="top"><div class="eyebrow">KUMO LABS / MATERIAL INTELLIGENCE / EXPERIMENTS</div><a href="../demo/" class="small">CMF workstation</a></div>
 <h1>MaterialNet<br>Research Lab</h1>
@@ -40,7 +40,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#12181b;border-radius
 <input id="photo" type="file" accept="image/*">
 <div style="margin-top:20px"><button id="run" disabled>Run on this device</button></div>
 <p class="small" id="state" aria-live="polite">Select a model, labels, and an image.</p>
-<div class="note">Model weights are not bundled with this website. The WebAssembly runtime downloads from the pinned jsDelivr package on first use. No image upload is performed.</div>
+<div class="note">Model weights are not bundled with this website. The WebAssembly runtime is provided by this Kumo site; the uploaded sample is not transmitted. No image upload is performed.</div>
 </section>
 <section class="card">
 <h2>02 / Experimental result</h2>
@@ -69,7 +69,7 @@ $('run').onclick=async()=>{
  try{
   const ort=window.ort;
   if(!ort?.InferenceSession)throw Error('ONNX runtime could not load; check network access');
-  ort.env.wasm.wasmPaths='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/';
+  ort.env.wasm.wasmPaths=new URL('../../vendor/ort/',location.href).href;
   ort.env.wasm.numThreads=1;
   const labels=JSON.parse(await $('labels').files[0].text());
   if(!Array.isArray(labels)||labels.length<2||!labels.every(x=>typeof x==='string'))throw Error('Expected labels.json array');
