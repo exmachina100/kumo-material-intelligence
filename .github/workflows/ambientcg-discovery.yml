@@ -1,0 +1,20 @@
+name: Inspect ambientCG licensed material API
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'training/external/probe_ambientcg.py'
+      - '.github/workflows/ambientcg-discovery.yml'
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Inspect official ambientCG category and thumbnail structures
+        run: python training/external/probe_ambientcg.py
