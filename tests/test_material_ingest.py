@@ -19,6 +19,11 @@ class CandidateSelectionTests(unittest.TestCase):
     def test_category_takes_precedence_over_tag(self):
         self.assertEqual(INGEST.discover_family({
             "category":"Wood/Veneers","name":"metal color","tags":["metal"]}),"wood")
+    def test_textile_plastic_rubber_category_mapping(self):
+        self.assertEqual(INGEST.discover_family({"category":"Textiles & Leather/Fabrics","name":"Fabric Weave"}),"textile")
+        self.assertEqual(INGEST.discover_family({"category":"Plastic & Rubber/Plastic","name":"Glossy Sheet"}),"polymer")
+        self.assertEqual(INGEST.discover_family({"category":"Plastic & Rubber/Rubber","name":"Tire Texture"}),"rubber")
+        self.assertEqual(INGEST.discover_family({"category":"Wood/Planks","tags":["metallic color"]}),"wood")
     def test_balanced_candidates_and_type_filter(self):
         catalog={
             "metal_plate":{"type":1,"thumbnail_url":"https://cdn.polyhaven.com/metal.png",
