@@ -27,7 +27,7 @@ label{display:block;font-size:12px;color:#aebac0;margin-top:10px}label input,lab
 <div class="toolbar"><div id="stats" class="chip">Loading…</div><input type="search" id="search" placeholder="Search title, category, or asset ID" aria-label="Search references">
 <select id="filter" aria-label="Review status"><option value="all">All</option><option value="pending">Pending</option><option value="include">Reviewed</option><option value="exclude">Excluded</option><option value="uncertain">Uncertain</option></select>
 <input type="text" id="reviewer" placeholder="Reviewer identifier" aria-label="Reviewer name or identifier">
-<button id="export">Export reviews</button></div>
+<button id="export">Export reviews</button><button id="import" class="muted">Import reviews</button><input id="importFile" type="file" accept=".json,application/json" hidden></div>
 <div class="workspace">
 <section class="panel"><div id="gallery" class="gallery" aria-label="Material reference images"></div></section>
 <section class="panel" id="detail"><img id="preview" class="preview" alt="Reference material sample">
@@ -41,9 +41,10 @@ label{display:block;font-size:12px;color:#aebac0;margin-top:10px}label input,lab
 </section></div></main>
 <script type="module">
 import {FAMILIES} from '../../packages/material-dna/src/index.mjs';
-import {makeReview,validateReview,reviewStats} from '../../packages/material-dna/src/review.mjs';
+import {makeReview,validateReview} from '../../packages/material-dna/src/review.mjs';
+import {importReviewBundle,mergeReviews,exportReviewBundle,summarizeReviewQuality} from '../../packages/material-dna/src/review-bundle.mjs';
 const $=id=>document.getElementById(id),KEY='kumo-cmf-review-v1';
-let assets=[],selected=0;const reviews=new Map();
+let assets=[],selected=0;let reviews=new Map();
 const root=new URL('../../training/external/polyhaven_cc0_staging/',location.href);
 const state=()=>[...reviews.values()];
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state()))}catch{$('feedback').textContent='Browser storage is full; export your reviews.'}}
@@ -51,7 +52,7 @@ function read(){try{for(const x of JSON.parse(localStorage.getItem(KEY)||'[]'))i
 function download(data,name){const u=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}
 function filtered(){const q=$('search').value.trim().toLowerCase(),f=$('filter').value;return assets.filter(a=>{const status=reviews.get(a.asset_id)?.decision||'pending';return (f==='all'||f===status)&&[a.asset_id,a.title,a.catalog_category,a.catalog_suggestion].join(' ').toLowerCase().includes(q)})}
 function render(){
- const s=reviewStats(assets,state());$('stats').textContent=s.total+' refs · '+s.reviewed+' approved · '+s.pending+' pending';
+ const s=summarizeReviewQuality(assets,reviews);$('stats').textContent=assets.length+' refs · '+s.included+' approved · '+s.pending+' pending · '+s.sourceVerified+' source-verified';
  const gallery=$('gallery');gallery.replaceChildren();for(const a of filtered()){
   const tile=document.createElement('button');tile.className='tile '+(reviews.get(a.asset_id)?.decision||'')+(assets[selected]?.asset_id===a.asset_id?' current':'');
   const img=document.createElement('img');img.loading='lazy';img.src=new URL(encodeURIComponent(a.path),root).href;img.alt='Material '+a.asset_id;
@@ -82,7 +83,22 @@ function next(){if(!assets.length)return;select(assets[(selected+1)%assets.lengt
 for(const f of FAMILIES.filter(x=>x!=='unknown')){const option=document.createElement('option');option.value=f;option.textContent=f.replaceAll('-',' ');$('family').append(option)}
 $('approve').onclick=()=>store('include');$('exclude').onclick=()=>store('exclude');$('uncertain').onclick=()=>store('uncertain');
 $('next').onclick=next;$('search').oninput=render;$('filter').onchange=render;
-$('export').onclick=()=>download({schemaVersion:'0.1.0',source:'Poly Haven',exported_at:new Date().toISOString(),reviews:state()},'kumo-cmf-material-reviews.json');
+$('export').onclick=()=>download(exportReviewBundle(reviews),'kumo-cmf-material-reviews.json');
+$('import').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ try{
+  if(!assets.length)throw new Error('Load the source registry before importing');
+  if(file.size>2_000_000)throw new Error('Review file exceeds 2MB');
+  const incoming=importReviewBundle(JSON.parse(await file.text()),new Set(assets.map(a=>a.asset_id)));
+  const duplicate=[...incoming.keys()].filter(id=>reviews.has(id)).length;
+  if(duplicate&&!window.confirm('Replace '+duplicate+' existing review decisions with imported versions?'))return;
+  reviews=mergeReviews(reviews,incoming);
+  persist();select(assets[selected].asset_id);
+  $('feedback').textContent='Imported '+incoming.size+' validated review decisions.';
+ }catch(error){$('feedback').textContent='Import rejected: '+error.message}
+ finally{e.target.value=''}
+};
 read();
 try{
  const response=await fetch(new URL('provenance.json',root),{cache:'no-store'});
@@ -90,6 +106,9 @@ try{
  const data=await response.json();
  if(!Array.isArray(data))throw new Error('Invalid source registry');
  assets=data.filter(a=>a.asset_id&&/^[\w-]+\.jpg$/.test(a.path)&&a.source==='Poly Haven').sort((a,b)=>a.asset_id.localeCompare(b.asset_id));
- if(!assets.length)throw new Error('No source images available');select(assets[0].asset_id);
+ if(!assets.length)throw new Error('No source images available');
+ const verified=new Set(assets.map(a=>a.asset_id));
+ reviews=new Map([...reviews].filter(([id,r])=>validateReview(r,verified).valid));
+ select(assets[0].asset_id);
 }catch(e){$('stats').textContent='Source unavailable';$('feedback').textContent=e.message}
 </script></body></html>
