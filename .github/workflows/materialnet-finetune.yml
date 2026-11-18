@@ -1,0 +1,70 @@
+name: Train MaterialNet-v2 (source-grouped fine-tuning research)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'training/experiments/finetune_materialnet.py'
+      - 'training/experiments/material_splits.py'
+      - 'training/experiments/vision_dataset.py'
+      - 'tests/test_material_splits.py'
+      - '.github/workflows/materialnet-finetune.yml'
+permissions:
+  contents: read
+concurrency:
+  group: materialnet-finetune
+  cancel-in-progress: true
+jobs:
+  train:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate source-grouped train-val-test splits before any heavy training
+        run: |
+          python -m unittest discover -s tests -p 'test_material_splits.py' -v
+          python -m unittest discover -s tests -p 'test_vision_dataset.py' -v
+          python -m py_compile training/experiments/finetune_materialnet.py
+      - name: Install CPU model training and ONNX evaluation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "numpy>=1.26,<3" "Pillow>=10,<13" "scikit-learn>=1.5,<2" "onnx>=1.16,<2" "onnxruntime>=1.19,<2"
+          python -m pip install "torch>=2.4,<3" "torchvision>=0.19,<1" --index-url https://download.pytorch.org/whl/cpu
+      - name: Fine-tune pretrained MobileNetV3 on CC0 multi-source CMF references
+        run: |
+          python training/experiments/finetune_materialnet.py \
+            --head-epochs 2 --finetune-epochs 4 --batch 16 \
+            --patience 3 --out training/out/materialnet-v2
+      - name: Enforce real research audit, no automatic production model release
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('training/out/materialnet-v2')
+          r=json.loads((root/'evaluation.json').read_text())
+          assert r['status']=='RESEARCH_ONLY'
+          assert r['release_eligible'] is False and r['expert_reviewed'] is False
+          assert r['synthetic_training_used'] is False
+          assert len(r['classes'])>=8
+          assert r['train'] and r['val'] and r['test']
+          groups={split:set(items) for split,items in r['split_assets'].items()}
+          assert not groups['train']&groups['val']
+          assert not groups['train']&groups['test']
+          assert not groups['val']&groups['test']
+          assert r['onnx_export']['verified'] is True
+          assert (root/'materialnet-v2-research.onnx').stat().st_size>500000
+          print('Research fine-tune training completed with isolated splits and ONNX parity')
+          print('Same-split baseline F1:',r['baseline_frozen_same_split']['macro_f1'])
+          print('Same-split fine-tuned F1:',r['fine_tuned_same_split']['macro_f1'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: materialnet-v2-finetuned-RESEARCH-ONLY
+          path: |
+            training/out/materialnet-v2/evaluation.json
+            training/out/materialnet-v2/labels.json
+            training/out/materialnet-v2/materialnet-v2-research.onnx
+            training/out/materialnet-v2/materialnet-v2-research.pt
+          retention-days: 30
