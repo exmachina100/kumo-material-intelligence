@@ -12,3 +12,7 @@ training/out/
 *.safetensors
 __pycache__/
 .pytest_cache/
+
+# GPT-generated full-resolution material batches are published as release assets
+training/gpt_synthetic/generated/
+training/gpt_synthetic/gpt-cmf-*.zip
