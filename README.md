@@ -2,7 +2,7 @@
 
 **Version 0.6 — 6-family baseline + 10-family beta, local inference, two CC0 source libraries.**
 
-[Main workstation](https://exmachina100.github.io/kumo-material-intelligence/apps/demo/) · [Material review studio](https://exmachina100.github.io/kumo-material-intelligence/apps/review/) · [Research model lab](https://exmachina100.github.io/kumo-material-intelligence/apps/research/) · [Model release criteria](docs/model-release.md)
+[Main workstation](https://exmachina100.github.io/kumo-material-intelligence/apps/demo/) · [Material review studio](https://exmachina100.github.io/kumo-material-intelligence/apps/review/) · [GPT synthetic image stream](https://exmachina100.github.io/kumo-material-intelligence/apps/synthetic/) · [Research model lab](https://exmachina100.github.io/kumo-material-intelligence/apps/research/) · [Model release criteria](docs/model-release.md)
 
 ## What works now
 
@@ -64,3 +64,12 @@ Dataset source code and documentation are under `training/`. The `tests/browser-
 ## Security, license and provenance
 
 The repo is public. Avoid adding supplier-confidential or internal OEM photographs. Model weights are used under their applicable upstream licenses; the CC0 reference sources have independent documented provenance. Before enterprise storage, add authenticated encrypted persistence, retention and access policies. This repository's own code has no public redistribution license selected yet.
+
+
+## Daily GPT image drip (research-only synthetic sources)
+
+The repository now includes a real image-generation and delivery pipeline under [`training/gpt_synthetic/`](training/gpt_synthetic/README.md), scheduled by GitHub Actions daily at **09:10 IST**, six images per day, with manual hard-capped batches. The OpenAI Image API requires a **separately billed `OPENAI_API_KEY` repository secret** to begin unattended generation. Code and dry-run validation have passed, but actual future image delivery depends on configuring the secret. Full-quality batch ZIPs are published as date-keyed GitHub Releases; small preview sheets and provenance records are committed to GitHub and displayed in the synthetic image stream. AI images are intentionally ineligible for real-material val/test evaluation.
+
+## Model training improvement — independent evaluation
+
+A new [MaterialNet-v2 fine-tuning workflow](.github/workflows/materialnet-finetune.yml) trains the last MobileNetV3 feature blocks with source-grouped train/validation/test, augmentation, class-weighted sampling, validation-based checkpoint selection, and verified research ONNX export. Its first run completed successfully. On the same held-out weak-label split, **frozen-feature baseline macro-F1 was 0.7668 and fine-tuned macro-F1 was 0.7122**: the fine-tuned weights are **not promoted**. Training outputs remain research-only, and synthetic images are excluded from this benchmark.
