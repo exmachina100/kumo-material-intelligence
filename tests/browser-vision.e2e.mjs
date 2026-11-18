@@ -28,6 +28,22 @@ try{
   await page.locator('#acceptAI').click();
   assert.equal(await page.locator('#recognition').textContent(),'Designer-confirmed');
  }
+ // The expanded model is opt-in and must never silently assign a verified family.
+ await page.locator('#visionVariant').selectOption('research-expanded');
+ assert.equal(await page.locator('#acceptAI').isDisabled(),true);
+ await page.locator('#identify').click();
+ await page.waitForFunction(()=>{
+  const text=document.querySelector('#visionStatus')?.textContent||'';
+  return text.includes('Suggestion available')||text.includes('AI suggestion withheld')||text.includes('Vision unavailable');
+ },{timeout:120000});
+ const expandedStatus=await page.locator('#visionStatus').textContent();
+ assert.ok(!expandedStatus.includes('Vision unavailable'),'Expanded ONNX model failed: '+expandedStatus);
+ assert.match(await page.locator('#aiAlternatives').textContent(),/Other visual possibilities:/);
+ const dna=JSON.parse(await page.locator('#json').textContent());
+ assert.equal(dna.visionResearch.modelVariant,'research-expanded');
+ assert.equal(dna.visionResearch.notGroundTruth,true);
+ assert.equal(dna.visionResearch.confirmedByDesigner,false);
+ console.log('Expanded 10-family model local inference PASSED');
  assert.deepEqual(errors,[],'Uncaught page JS errors');
  console.log('Browser vision end-to-end inference PASSED');
 }finally{await browser.close()}
