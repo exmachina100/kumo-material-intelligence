@@ -4,6 +4,10 @@ on:
   push:
     paths:
       - 'tests/browser-vision.e2e.mjs'
+      - 'apps/demo/index.html'
+      - 'apps/review/index.html'
+      - 'packages/inference-sdk/src/**'
+      - 'models/research-expanded/manifest.json'
       - '.github/workflows/browser-vision-e2e.yml'
 permissions:
   contents: read
