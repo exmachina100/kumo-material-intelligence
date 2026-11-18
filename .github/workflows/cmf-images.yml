@@ -12,7 +12,7 @@ permissions:
 jobs:
   generate-and-ingest:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,7 +24,7 @@ jobs:
       - name: Generate 156 original raster samples
         run: python training/synthetic/generate_png_samples.py --output training/image_samples --count 12 --size 192
       - name: Expand CC0 real-material reference staging and provenance
-        run: python training/external/ingest_polyhaven.py --output training/external/polyhaven_cc0_staging --limit 110 --per-family 16
+        run: python training/external/ingest_polyhaven.py --output training/external/polyhaven_cc0_staging --limit 280 --per-family 34
       - name: Validate CC0 reference staging and provenance
         run: |
           python - <<'PY'
