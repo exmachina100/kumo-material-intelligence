@@ -47,12 +47,13 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#12181b;border-radius
 <img id="preview" alt="Selected sample preview" hidden>
 <div id="result" class="result"><div class="small">Waiting for local inference</div></div>
 <details style="margin-top:16px"><summary class="small">View technical details</summary><pre id="technical">No result yet.</pre></details>
-<div class="note" style="margin-top:16px">Softmax scores are <strong>not calibrated probabilities</strong>. Material classes are derived from noisy catalog-category hints. A high score does not verify substrate, coating, finish, wear properties or compliance.</div>
+<div class="note" style="margin-top:16px">Result requires agreement across three different crops and a conservative raw-score screen. This is an experimental consistency check, <strong>not validated unknown-material recognition</strong>. Softmax scores are <strong>not calibrated probabilities</strong>. Material classes are derived from noisy catalog-category hints. A high score does not verify substrate, coating, finish, wear properties or compliance.</div>
 </section>
 </div>
 </main>
 <script type="module">
 import {OnnxMaterialClassifier} from '../../packages/inference-sdk/src/onnx-adapter.mjs';
+import {summarizeCropPredictions} from '../../packages/inference-sdk/src/research-consensus.mjs';
 const $=id=>document.getElementById(id);
 const files=['model','labels','photo'];
 for(const id of files)$(id).addEventListener('change',()=>{
@@ -83,17 +84,30 @@ $('run').onclick=async()=>{
   const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
   ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);
   bitmap.close?.();
-  const sample=ctx.getImageData(0,0,canvas.width,canvas.height);
-  $('state').textContent='Classifying on this device…';
-  const result=await classifier.classify(sample.data,{width:canvas.width,height:canvas.height});
+  // Three deliberately distinct views. The 80%-width views help reveal
+  // spatial instability, not to prove unknown-material classification.
+  const cropWidth=Math.max(1,Math.floor(canvas.width*.8));
+  const sampleViews=[
+   {x:0,y:0,width:canvas.width,height:canvas.height},
+   {x:0,y:0,width:cropWidth,height:canvas.height},
+   {x:canvas.width-cropWidth,y:0,width:cropWidth,height:canvas.height}
+  ];
+  const predictions=[];
+  for(const view of sampleViews){
+   const sample=ctx.getImageData(view.x,view.y,view.width,view.height);
+   $('state').textContent='Classifying crop '+(predictions.length+1)+' of '+sampleViews.length+'…';
+   predictions.push(await classifier.classify(sample.data,{width:view.width,height:view.height}));
+  }
+  const summary=summarizeCropPredictions(predictions,{minimumScore:.85,minimumAgreement:.75});
   const elapsed=Math.round(performance.now()-start);
   $('result').replaceChildren();
-  const heading=document.createElement('div');heading.className='small';heading.textContent='Model guess (weak-label research)';
-  const value=document.createElement('div');value.className='value';value.textContent=result.family.replaceAll('-',' ');
-  const sub=document.createElement('div');sub.className='small';sub.textContent='Raw softmax score '+(result.confidence*100).toFixed(1)+'% · '+elapsed+'ms total elapsed';
-  $('result').append(heading,value,sub);
-  $('technical').textContent=JSON.stringify({result,modelBytes:onnxBytes.byteLength,labels,executionProvider:'wasm',elapsedMs:elapsed},null,2);
-  $('state').textContent='Local research inference completed.';
+  const heading=document.createElement('div');heading.className='small';heading.textContent=summary.withheld?'No reliable experimental guess':'Unverified model guess (weak catalog labels)';
+  const value=document.createElement('div');value.className='value';value.textContent=summary.family.replaceAll('-',' ');
+  const sub=document.createElement('div');sub.className='small';sub.textContent='Crop agreement '+(summary.agreement*100).toFixed(0)+'% · mean raw score '+(summary.meanRawScore*100).toFixed(1)+'% · '+elapsed+'ms';
+  const caveat=document.createElement('p');caveat.className='small';caveat.textContent=summary.withheld?'Withheld: '+summary.reason+'. Even non-withheld guesses must be checked by a designer.':'Not verified against independent automotive material photographs.';
+  $('result').append(heading,value,sub,caveat);
+  $('technical').textContent=JSON.stringify({summary,modelBytes:onnxBytes.byteLength,labels,executionProvider:'wasm',elapsedMs:elapsed,views:sampleViews},null,2);
+  $('state').textContent='Local research evaluation completed.';
  }catch(error){
   console.error(error);
   $('state').textContent='Unable to infer: '+(error?.message||String(error));
