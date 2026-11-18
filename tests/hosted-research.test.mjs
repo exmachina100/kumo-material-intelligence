@@ -21,6 +21,7 @@ test('three-crop inference identifies consistent guesses without confirming them
  const result=await identifyResearchMaterial(classifier,data,10,8);
  assert.equal(calls,3);assert.equal(result.topGuess,'metal');
  assert.equal(result.withheld,false);assert.equal(result.disclaimer.includes('Research'),true);
+ assert.equal(result.hypotheses[0].family,'metal');assert.ok(result.hypotheses[0].rawMeanSoftmax>.9);
 });
 test('crop disagreement yields unknown',async()=>{
  let n=0;const classifier={classify:async()=>({family:++n===1?'metal':'wood',confidence:.97})};
