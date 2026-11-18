@@ -24,6 +24,9 @@ class CandidateSelectionTests(unittest.TestCase):
         self.assertEqual(INGEST.discover_family({"category":"Plastic & Rubber/Plastic","name":"Glossy Sheet"}),"polymer")
         self.assertEqual(INGEST.discover_family({"category":"Plastic & Rubber/Rubber","name":"Tire Texture"}),"rubber")
         self.assertEqual(INGEST.discover_family({"category":"Wood/Planks","tags":["metallic color"]}),"wood")
+        self.assertEqual(INGEST.discover_family({"category":"Textiles & Leather/Leather","name":"Bovine Hide"}),"leather")
+        self.assertEqual(INGEST.discover_family({"category":"Textiles & Leather/Fabric","name":"Woven Sheet"}),"textile")
+        self.assertEqual(INGEST.discover_family({"category":"Plastic & Rubber/Rubber","name":"Elastomer"}),"rubber")
     def test_balanced_candidates_and_type_filter(self):
         catalog={
             "metal_plate":{"type":1,"thumbnail_url":"https://cdn.polyhaven.com/metal.png",
