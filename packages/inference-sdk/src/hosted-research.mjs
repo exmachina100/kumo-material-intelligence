@@ -1,6 +1,7 @@
 import {OnnxMaterialClassifier} from './onnx-adapter.mjs';
 import {summarizeCropPredictions} from './research-consensus.mjs';
-const RUNTIME='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js';
+const RUNTIME=new URL('../../../vendor/ort/ort.min.js',import.meta.url).href;
+const WASM_ROOT=new URL('../../../vendor/ort/',import.meta.url).href;
 let runtimePromise;
 export function verifyResearchManifest(manifest){
  if(!manifest||manifest.kind!=='experimental-catalog-proxy'||manifest.approved!==false||
@@ -44,7 +45,7 @@ export async function loadHostedResearchModel(root,{onProgress=()=>{}}={}){
  await verifyModelBytes(bytes,manifest);
  onProgress('Starting on-device inference runtime…');
  const ort=await getRuntime();
- ort.env.wasm.wasmPaths='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/';
+ ort.env.wasm.wasmPaths=WASM_ROOT;
  ort.env.wasm.numThreads=1;
  const session=await ort.InferenceSession.create(new Uint8Array(bytes),{executionProviders:['wasm']});
  return {
