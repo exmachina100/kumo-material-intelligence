@@ -37,3 +37,27 @@ test('GitHub Pages copies the pinned model without depending on expiring trainin
  assert.match(workflow,/sha256/);
  assert.doesNotMatch(workflow,/gh run download/);
 });
+
+test('expanded 10-class ONNX research artifact is checksum verified and never approved for production',()=>{
+ const dir='models/research-expanded/';
+ const m=verifyResearchManifest(JSON.parse(readFileSync(dir+'manifest.json','utf8')));
+ const model=readFileSync(dir+m.weights);
+ assert.equal(model.length,m.bytes);
+ assert.equal(createHash('sha256').update(model).digest('hex'),m.sha256);
+ assert.deepEqual(JSON.parse(readFileSync(dir+'labels.json','utf8')),m.labels);
+ assert.equal(m.labels.length,10);
+ for(const family of ['polymer','rubber','textile','glass'])assert.ok(m.labels.includes(family));
+ const report=JSON.parse(readFileSync(dir+'evaluation.json','utf8'));
+ assert.equal(report.release_eligible,false);
+ assert.equal(report.expert_reviewed,false);
+ assert.ok(report.dataset.samples>=300);
+ assert.ok(report.by_source_weak_label_metrics['Poly Haven']);
+ assert.ok(report.by_source_weak_label_metrics.ambientCG);
+});
+test('workstation exposes explicit research model selector and never auto-confirms predictions',()=>{
+ const html=readFileSync('apps/demo/index.html','utf8');
+ assert.match(html,/id="visionVariant"/);
+ assert.match(html,/research-expanded/);
+ assert.match(html,/confirmedByDesigner:false/);
+ assert.match(html,/visionSuggestion\.modelVariant/);
+});
