@@ -40,13 +40,17 @@ jobs:
           cp node_modules/onnxruntime-web/dist/ort.min.js site/vendor/ort/
           cp node_modules/onnxruntime-web/dist/ort-wasm*.wasm site/vendor/ort/
           cp node_modules/onnxruntime-web/dist/ort-wasm*.mjs site/vendor/ort/
-          mkdir -p site/models/research
+          mkdir -p site/models/research site/models/research-expanded
           cp models/research/manifest.json site/models/research/manifest.json
+          cp models/research-expanded/manifest.json site/models/research-expanded/manifest.json
       - name: Stage repository-hosted verified research model
         run: |
           cp models/research/vision-probe-research.onnx site/models/research/vision-probe-research.onnx
           cp models/research/labels.json site/models/research/labels.json
           cp models/research/evaluation.json site/models/research/evaluation.json
+          cp models/research-expanded/vision-probe-research.onnx site/models/research-expanded/vision-probe-research.onnx
+          cp models/research-expanded/labels.json site/models/research-expanded/labels.json
+          cp models/research-expanded/evaluation.json site/models/research-expanded/evaluation.json
           python - <<'PY'
           import hashlib,json
           from pathlib import Path
@@ -58,6 +62,18 @@ jobs:
           assert hashlib.sha256(data).hexdigest()==m['sha256']
           assert json.loads((root/'labels.json').read_text())==m['labels']
           assert json.loads((root/'evaluation.json').read_text())['release_eligible'] is False
+          # The additional 10-class vision probe is separately opt-in and unapproved.
+          expanded=Path('site/models/research-expanded')
+          m2=json.loads((expanded/'manifest.json').read_text())
+          assert m2['approved'] is False and m2['releaseEligible'] is False and m2['expertReviewed'] is False
+          assert len(m2['labels'])==10
+          assert m2['dataset']['samples']>=300
+          blob=(expanded/m2['weights']).read_bytes()
+          assert len(blob)==m2['bytes']
+          assert hashlib.sha256(blob).hexdigest()==m2['sha256']
+          assert json.loads((expanded/'labels.json').read_text())==m2['labels']
+          assert json.loads((expanded/'evaluation.json').read_text())['release_eligible'] is False
+          print('Expanded 10-family research ONNX checksum and labels verified')
           print('Research model release checks passed; keeping production classification disabled.')
           assert (Path('site/vendor/ort/ort.min.js')).is_file()
           wasm=list(Path('site/vendor/ort').glob('ort-wasm*.wasm'))
