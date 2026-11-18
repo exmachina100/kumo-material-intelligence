@@ -22,15 +22,15 @@ CATALOG = "https://api.polyhaven.com/assets?t=textures"
 USER_AGENT = "KumoMaterialIntelligence-DatasetResearch/0.2 (https://github.com/exmachina100/kumo-material-intelligence)"
 # Discovery only, never used as ground-truth training labels.
 DISCOVERY = {
+    "textile": ("textile", "fabric", "cloth", "woven", "cotton", "denim", "felt", "wool", "knit", "weave"),
+    "polymer": ("plastic", "polymer", "vinyl", "pvc", "polypropylene"),
+    "rubber": ("rubber", "elastomer", "tire", "tyre"),
     "leather": ("leather", "suede", "nubuck"),
-    "textile": ("fabric", "textile", "cloth", "woven", "cotton", "denim"),
     "metal": ("metal", "steel", "aluminium", "aluminum", "iron", "copper", "brass"),
     "wood": ("wood", "veneer", "timber", "plywood"),
     "stone": ("stone", "marble", "granite", "slate", "rock"),
     "ceramic": ("ceramic", "porcelain", "tile"),
-    "polymer": ("plastic", "polymer", "vinyl"),
     "glass": ("glass",),
-    "rubber": ("rubber",),
     "coating": ("paint", "painted", "lacquer"),
     "paper": ("paper", "cardboard"),
     "concrete": ("concrete", "cement"),
@@ -61,15 +61,26 @@ def safe_get(url: str, max_bytes: int = MAX_BYTES) -> bytes:
 
 
 def discover_family(item: dict) -> str:
-    """A catalog suggestion only, not a physical-material label."""
+    """Conservative catalog suggestion, never a verified material label.
+
+    Prefer explicit category and structured material facets. Avoid loose tags
+    (e.g. 'metallic color' on a wood asset) when category is already known.
+    """
     category = str(item.get("category") or "").lower()
-    tags = " ".join(str(t).lower() for t in item.get("tags", []))
-    name = str(item.get("name") or "").lower()
-    # Categories are more reliable than free-text names or tags.
-    for text in (category, name, tags):
-        for family, terms in DISCOVERY.items():
-            if any(re.search(r"\b" + re.escape(term) + r"\b", text) for term in terms):
-                return family
+    attributes = item.get("attributes") or {}
+    if not isinstance(attributes, dict):
+        attributes = {}
+    materials = attributes.get("material") or []
+    if isinstance(materials, str):
+        materials = [materials]
+    primary = category + " " + " ".join(str(t) for t in materials)
+    for family, terms in DISCOVERY.items():
+        if any(re.search(r"\\b" + re.escape(term) + r"\\b", primary) for term in terms):
+            return family
+    secondary = " ".join([str(item.get("name") or ""), *[str(x) for x in item.get("tags", [])]]).lower()
+    for family, terms in DISCOVERY.items():
+        if any(re.search(r"\\b" + re.escape(term) + r"\\b", secondary) for term in terms):
+            return family
     return "other"
 
 
@@ -98,7 +109,7 @@ def select_candidates(catalog: dict, limit: int, per_family: int) -> list[tuple[
             if len(selected) == limit:
                 return selected
     # Round-robin selection limits dominance from outdoor/architecture surfaces.
-    for i in range(per_family):
+    for i in range(max(per_family, (limit // max(1,len(DISCOVERY))) + 2)):
         for family in DISCOVERY:
             available = [x for x in groups[family] if x[0] not in seen]
             if not available:
@@ -111,7 +122,7 @@ def select_candidates(catalog: dict, limit: int, per_family: int) -> list[tuple[
     return selected
 
 
-def ingest(output: Path, limit: int = 110, per_family: int = 16, pause: float = 0.15) -> dict:
+def ingest(output: Path, limit: int = 280, per_family: int = 34, pause: float = 0.15) -> dict:
     from PIL import Image
     output.mkdir(parents=True, exist_ok=True)
     catalog = json.loads(safe_get(CATALOG, max_bytes=12_000_000))
@@ -182,8 +193,8 @@ def ingest(output: Path, limit: int = 110, per_family: int = 16, pause: float = 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=Path("training/external/polyhaven_cc0_staging"))
-    parser.add_argument("--limit", type=int, default=110)
-    parser.add_argument("--per-family", type=int, default=16)
+    parser.add_argument("--limit", type=int, default=280)
+    parser.add_argument("--per-family", type=int, default=34)
     parser.add_argument("--pause", type=float, default=0.15)
     args = parser.parse_args()
     ingest(args.output, args.limit, args.per_family, args.pause)
