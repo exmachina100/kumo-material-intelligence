@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "0.1.0",
+  "status": "awaiting_first_billed_batch",
+  "total_samples": 0,
+  "total_batches": 0,
+  "batch_schedule": "Daily at 03:40 UTC; 6 images/run, API key required",
+  "source": "OpenAI GPT Image API; NOT expert-verified real materials",
+  "training_eligible": false,
+  "batches": []
+}
