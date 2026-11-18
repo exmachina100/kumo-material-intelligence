@@ -23,6 +23,8 @@ jobs:
           node-version: '22'
       - name: Validate application tests
         run: npm test
+      - name: Install pinned local ONNX browser runtime
+        run: npm install --no-save --ignore-scripts onnxruntime-web@1.20.1
       - name: Assemble static deployment
         run: |
           mkdir -p site/apps site/packages
@@ -34,6 +36,10 @@ jobs:
           cp -R packages/inference-sdk site/packages/inference-sdk
           mkdir -p site/training/external
           cp -R training/external/polyhaven_cc0_staging site/training/external/polyhaven_cc0_staging
+          mkdir -p site/vendor/ort
+          cp node_modules/onnxruntime-web/dist/ort.min.js site/vendor/ort/
+          cp node_modules/onnxruntime-web/dist/ort-wasm*.wasm site/vendor/ort/
+          cp node_modules/onnxruntime-web/dist/ort-wasm*.mjs site/vendor/ort/
           mkdir -p site/models/research
           cp models/research/manifest.json site/models/research/manifest.json
       - name: Stage repository-hosted verified research model
@@ -53,6 +59,10 @@ jobs:
           assert json.loads((root/'labels.json').read_text())==m['labels']
           assert json.loads((root/'evaluation.json').read_text())['release_eligible'] is False
           print('Research model release checks passed; keeping production classification disabled.')
+          assert (Path('site/vendor/ort/ort.min.js')).is_file()
+          wasm=list(Path('site/vendor/ort').glob('ort-wasm*.wasm'))
+          assert wasm, 'No local ONNX WASM runtime present'
+          print('Same-origin ONNX runtime staged:',[p.name for p in wasm])
           PY
       - name: Finalize static website
         run: |
