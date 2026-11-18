@@ -1,0 +1,67 @@
+name: Train material model with/without approved GPT synthetic samples
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'training/experiments/synthetic_ablation.py'
+      - 'training/gpt_synthetic/import_approved_seed.py'
+      - 'tests/test_synthetic_ablation.py'
+      - '.github/workflows/materialnet-synthetic-ablation.yml'
+permissions:
+  contents: read
+concurrency:
+  group: materialnet-synthetic-ablation
+  cancel-in-progress: true
+jobs:
+  train-and-evaluate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned frozen-feature and evaluation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "numpy>=1.26,<3" "Pillow>=10,<13" "scikit-learn>=1.5,<2"
+          python -m pip install "torch>=2.4,<3" "torchvision>=0.19,<1" --index-url https://download.pytorch.org/whl/cpu
+      - name: Validate synthetic-only train split and source checksum gates
+        run: python -m unittest discover -s tests -p 'test_synthetic_ablation.py' -v
+      - name: Fetch verified train-only sample bundle (not real-material ground truth)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p training/out/synthetic-input
+          gh release download gpt-cmf-approved-seed-2026-11-18 \
+            -p 'gpt-cmf-seed-2026-11-18.zip' \
+            -D training/out/synthetic-input
+          test -s training/out/synthetic-input/gpt-cmf-seed-2026-11-18.zip
+      - name: Fit and compare both classifiers on the SAME held-out REAL catalog sources
+        run: |
+          python training/experiments/synthetic_ablation.py \
+            --synthetic-zip training/out/synthetic-input/gpt-cmf-seed-2026-11-18.zip \
+            --max-synthetic-fraction 0.15 \
+            --out training/out/materialnet-synthetic-ablation
+      - name: Assert no synthetic contamination and no production promotion
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('training/out/materialnet-synthetic-ablation/evaluation.json').read_text())
+          assert report['status']=='RESEARCH_ONLY' and report['release_eligible'] is False
+          assert report['no_synthetic_validation_or_test'] is True
+          assert report['gpt_synthetic_train_count']>=5
+          real_splits=report['real_split_asset_ids']
+          assert not (set(real_splits['train'])&set(real_splits['test']))
+          assert not (set(real_splits['val'])&set(real_splits['test']))
+          assert not (set(real_splits['train'])&set(real_splits['val']))
+          assert not (set(report['gpt_synthetic_train_ids'])&set(real_splits['test']))
+          assert not (set(report['gpt_synthetic_train_ids'])&set(real_splits['val']))
+          print('Both classifiers trained; real-only test results compared without synthetic leakage.')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: materialnet-gpt-synthetic-ablation-research-only
+          path: training/out/materialnet-synthetic-ablation/evaluation.json
+          retention-days: 45
