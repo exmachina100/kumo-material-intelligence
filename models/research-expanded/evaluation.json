@@ -1,0 +1,802 @@
+{
+  "experiment": "vision-probe-0.3-multisource",
+  "status": "RESEARCH_ONLY",
+  "release_eligible": false,
+  "expert_reviewed": false,
+  "warning": "Predictions are against weak catalog categories and do NOT measure real-world material recognition.",
+  "image_encoder": "torchvision mobilenet_v3_small IMAGENET1K_V1",
+  "frozen_backbone": true,
+  "features_dimension": 576,
+  "preprocessing": {
+    "size": [
+      224,
+      224
+    ],
+    "resize": "bilinear",
+    "normalization": {
+      "mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "std": [
+        0.229,
+        0.224,
+        0.225
+      ]
+    }
+  },
+  "dataset": {
+    "source": "Poly Haven + ambientCG CC0 preview textures",
+    "samples": 315,
+    "source_counts": {
+      "Poly Haven": 227,
+      "ambientCG": 88
+    },
+    "class_counts": {
+      "stone": 38,
+      "rubber": 14,
+      "textile": 60,
+      "glass": 12,
+      "leather": 32,
+      "polymer": 27,
+      "ceramic": 38,
+      "wood": 39,
+      "coating": 29,
+      "metal": 26
+    },
+    "train": 236,
+    "test": 79,
+    "split_seed": 42,
+    "split_unit": "unique source asset id + matching checksum",
+    "labels_are_weak_catalog_hints": true
+  },
+  "classes": [
+    "ceramic",
+    "coating",
+    "glass",
+    "leather",
+    "metal",
+    "polymer",
+    "rubber",
+    "stone",
+    "textile",
+    "wood"
+  ],
+  "accuracy_vs_proxy": 0.7468354430379747,
+  "macro_f1_vs_proxy": 0.7194452915505547,
+  "by_source_weak_label_metrics": {
+    "Poly Haven": {
+      "test_count": 54,
+      "proxy_label_accuracy": 0.7592592592592593,
+      "macro_f1": 0.7263670539986329
+    },
+    "ambientCG": {
+      "test_count": 25,
+      "proxy_label_accuracy": 0.72,
+      "macro_f1": 0.6028571428571429
+    }
+  },
+  "classification_report": {
+    "ceramic": {
+      "precision": 0.6666666666666666,
+      "recall": 0.8,
+      "f1-score": 0.7272727272727273,
+      "support": 10.0
+    },
+    "coating": {
+      "precision": 0.7142857142857143,
+      "recall": 0.7142857142857143,
+      "f1-score": 0.7142857142857143,
+      "support": 7.0
+    },
+    "glass": {
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.8,
+      "support": 3.0
+    },
+    "leather": {
+      "precision": 1.0,
+      "recall": 0.625,
+      "f1-score": 0.7692307692307693,
+      "support": 8.0
+    },
+    "metal": {
+      "precision": 0.8,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.7272727272727273,
+      "support": 6.0
+    },
+    "polymer": {
+      "precision": 0.7142857142857143,
+      "recall": 0.7142857142857143,
+      "f1-score": 0.7142857142857143,
+      "support": 7.0
+    },
+    "rubber": {
+      "precision": 0.5,
+      "recall": 0.3333333333333333,
+      "f1-score": 0.4,
+      "support": 3.0
+    },
+    "stone": {
+      "precision": 0.7,
+      "recall": 0.7,
+      "f1-score": 0.7,
+      "support": 10.0
+    },
+    "textile": {
+      "precision": 0.7,
+      "recall": 0.9333333333333333,
+      "f1-score": 0.8,
+      "support": 15.0
+    },
+    "wood": {
+      "precision": 0.8888888888888888,
+      "recall": 0.8,
+      "f1-score": 0.8421052631578947,
+      "support": 10.0
+    },
+    "accuracy": 0.7468354430379747,
+    "macro avg": {
+      "precision": 0.7684126984126983,
+      "recall": 0.6953571428571428,
+      "f1-score": 0.7194452915505547,
+      "support": 79.0
+    },
+    "weighted avg": {
+      "precision": 0.7639943741209564,
+      "recall": 0.7468354430379747,
+      "f1-score": 0.7444463597694777,
+      "support": 79.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      8,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0
+    ],
+    [
+      1,
+      1,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      2,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      7,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      14,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      8
+    ]
+  ],
+  "heldout_predictions": [
+    {
+      "asset_id": "bark_willow",
+      "weak_label": "wood",
+      "prediction": "stone",
+      "max_softmax": 0.4741590619087219
+    },
+    {
+      "asset_id": "ambientcg:Plastic008",
+      "weak_label": "polymer",
+      "prediction": "polymer",
+      "max_softmax": 0.9990071654319763
+    },
+    {
+      "asset_id": "worn_shutter",
+      "weak_label": "metal",
+      "prediction": "metal",
+      "max_softmax": 0.9893904328346252
+    },
+    {
+      "asset_id": "rosewood_veneer1",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.7937286496162415
+    },
+    {
+      "asset_id": "concrete_tiles_02",
+      "weak_label": "ceramic",
+      "prediction": "ceramic",
+      "max_softmax": 0.9947099685668945
+    },
+    {
+      "asset_id": "terracotta_floor_tiles",
+      "weak_label": "ceramic",
+      "prediction": "ceramic",
+      "max_softmax": 0.9989938139915466
+    },
+    {
+      "asset_id": "aerial_grass_rock",
+      "weak_label": "stone",
+      "prediction": "stone",
+      "max_softmax": 0.6018992066383362
+    },
+    {
+      "asset_id": "roof_tiles_14",
+      "weak_label": "ceramic",
+      "prediction": "ceramic",
+      "max_softmax": 0.9980701804161072
+    },
+    {
+      "asset_id": "ambientcg:Fabric026",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.806023120880127
+    },
+    {
+      "asset_id": "wood_table",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.5984402298927307
+    },
+    {
+      "asset_id": "metal_grate_rusty",
+      "weak_label": "metal",
+      "prediction": "ceramic",
+      "max_softmax": 0.9971126317977905
+    },
+    {
+      "asset_id": "ambientcg:Fabric086",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.9683179259300232
+    },
+    {
+      "asset_id": "factory_wall",
+      "weak_label": "metal",
+      "prediction": "metal",
+      "max_softmax": 0.9547534584999084
+    },
+    {
+      "asset_id": "ribbed_corduroy",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.9999221563339233
+    },
+    {
+      "asset_id": "old_mosaic_floor",
+      "weak_label": "ceramic",
+      "prediction": "stone",
+      "max_softmax": 0.7610470652580261
+    },
+    {
+      "asset_id": "ambientcg:Leather031",
+      "weak_label": "leather",
+      "prediction": "leather",
+      "max_softmax": 0.9409293532371521
+    },
+    {
+      "asset_id": "floor_tiles_06",
+      "weak_label": "stone",
+      "prediction": "ceramic",
+      "max_softmax": 0.9990683197975159
+    },
+    {
+      "asset_id": "clay_roof_tiles_03",
+      "weak_label": "ceramic",
+      "prediction": "ceramic",
+      "max_softmax": 0.9898409247398376
+    },
+    {
+      "asset_id": "ambientcg:Fabric061",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.9937207698822021
+    },
+    {
+      "asset_id": "ambientcg:Plastic010",
+      "weak_label": "polymer",
+      "prediction": "polymer",
+      "max_softmax": 0.9802659153938293
+    },
+    {
+      "asset_id": "rocks_ground_02",
+      "weak_label": "stone",
+      "prediction": "stone",
+      "max_softmax": 0.9846152663230896
+    },
+    {
+      "asset_id": "interior_tiles",
+      "weak_label": "ceramic",
+      "prediction": "coating",
+      "max_softmax": 0.47566768527030945
+    },
+    {
+      "asset_id": "gingham_check",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.9591673612594604
+    },
+    {
+      "asset_id": "ambientcg:Leather033B",
+      "weak_label": "leather",
+      "prediction": "leather",
+      "max_softmax": 0.9117090106010437
+    },
+    {
+      "asset_id": "roof_09",
+      "weak_label": "ceramic",
+      "prediction": "ceramic",
+      "max_softmax": 0.9953126907348633
+    },
+    {
+      "asset_id": "brown_mud_leaves_01",
+      "weak_label": "stone",
+      "prediction": "rubber",
+      "max_softmax": 0.8894116878509521
+    },
+    {
+      "asset_id": "rubber_tiles",
+      "weak_label": "rubber",
+      "prediction": "ceramic",
+      "max_softmax": 0.7688552141189575
+    },
+    {
+      "asset_id": "concrete_wall_001",
+      "weak_label": "coating",
+      "prediction": "coating",
+      "max_softmax": 0.9895890951156616
+    },
+    {
+      "asset_id": "ambientcg:Sign015",
+      "weak_label": "glass",
+      "prediction": "textile",
+      "max_softmax": 0.5646860003471375
+    },
+    {
+      "asset_id": "moon_track_01",
+      "weak_label": "rubber",
+      "prediction": "rubber",
+      "max_softmax": 0.9988665580749512
+    },
+    {
+      "asset_id": "green_rough_planks",
+      "weak_label": "coating",
+      "prediction": "coating",
+      "max_softmax": 0.8011743426322937
+    },
+    {
+      "asset_id": "box_profile_metal_sheet",
+      "weak_label": "metal",
+      "prediction": "metal",
+      "max_softmax": 0.9686117768287659
+    },
+    {
+      "asset_id": "ambientcg:Plastic014A",
+      "weak_label": "polymer",
+      "prediction": "polymer",
+      "max_softmax": 0.9877679944038391
+    },
+    {
+      "asset_id": "ambientcg:Rubber004",
+      "weak_label": "rubber",
+      "prediction": "polymer",
+      "max_softmax": 0.4163200855255127
+    },
+    {
+      "asset_id": "broken_wall",
+      "weak_label": "stone",
+      "prediction": "stone",
+      "max_softmax": 0.9999808073043823
+    },
+    {
+      "asset_id": "ambientcg:Fabric030",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.863057553768158
+    },
+    {
+      "asset_id": "large_grey_tiles",
+      "weak_label": "stone",
+      "prediction": "ceramic",
+      "max_softmax": 0.731624186038971
+    },
+    {
+      "asset_id": "ambientcg:Fabric019",
+      "weak_label": "textile",
+      "prediction": "polymer",
+      "max_softmax": 0.8020544648170471
+    },
+    {
+      "asset_id": "ambientcg:Fabric028",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.8997015953063965
+    },
+    {
+      "asset_id": "brown_leather",
+      "weak_label": "leather",
+      "prediction": "leather",
+      "max_softmax": 0.9761810898780823
+    },
+    {
+      "asset_id": "book_pattern",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.8986713290214539
+    },
+    {
+      "asset_id": "brown_mud_03",
+      "weak_label": "stone",
+      "prediction": "stone",
+      "max_softmax": 0.9984908103942871
+    },
+    {
+      "asset_id": "ambientcg:Plastic013A",
+      "weak_label": "polymer",
+      "prediction": "textile",
+      "max_softmax": 0.7173063158988953
+    },
+    {
+      "asset_id": "marble_mosaic_tiles",
+      "weak_label": "ceramic",
+      "prediction": "ceramic",
+      "max_softmax": 0.916516125202179
+    },
+    {
+      "asset_id": "preconcrete_wall_001",
+      "weak_label": "coating",
+      "prediction": "coating",
+      "max_softmax": 0.9967392086982727
+    },
+    {
+      "asset_id": "aerial_rocks_02",
+      "weak_label": "stone",
+      "prediction": "stone",
+      "max_softmax": 0.9830547571182251
+    },
+    {
+      "asset_id": "green_metal_rust",
+      "weak_label": "metal",
+      "prediction": "coating",
+      "max_softmax": 0.8418741822242737
+    },
+    {
+      "asset_id": "wood_peeling_paint_weathered",
+      "weak_label": "coating",
+      "prediction": "coating",
+      "max_softmax": 0.6668040156364441
+    },
+    {
+      "asset_id": "ambientcg:Leather036D",
+      "weak_label": "leather",
+      "prediction": "leather",
+      "max_softmax": 0.9818411469459534
+    },
+    {
+      "asset_id": "large_square_pattern_01",
+      "weak_label": "ceramic",
+      "prediction": "ceramic",
+      "max_softmax": 0.997317373752594
+    },
+    {
+      "asset_id": "grey_roof_01",
+      "weak_label": "ceramic",
+      "prediction": "ceramic",
+      "max_softmax": 0.9672740697860718
+    },
+    {
+      "asset_id": "bark_brown_01",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.9939810633659363
+    },
+    {
+      "asset_id": "denmin_fabric_02",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.860975980758667
+    },
+    {
+      "asset_id": "ambientcg:Plastic013B",
+      "weak_label": "polymer",
+      "prediction": "textile",
+      "max_softmax": 0.33630678057670593
+    },
+    {
+      "asset_id": "wood_planks_dirt",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.988857090473175
+    },
+    {
+      "asset_id": "oak_veneer_01",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.9997685551643372
+    },
+    {
+      "asset_id": "planks_brown_10",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.7539831399917603
+    },
+    {
+      "asset_id": "ambientcg:Facade010",
+      "weak_label": "glass",
+      "prediction": "glass",
+      "max_softmax": 0.975020706653595
+    },
+    {
+      "asset_id": "ambientcg:Fabric080",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.5319568514823914
+    },
+    {
+      "asset_id": "ambientcg:Fabric081C",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.5319316983222961
+    },
+    {
+      "asset_id": "ambientcg:Leather039",
+      "weak_label": "leather",
+      "prediction": "textile",
+      "max_softmax": 0.602310061454773
+    },
+    {
+      "asset_id": "ambientcg:Leather034C",
+      "weak_label": "leather",
+      "prediction": "textile",
+      "max_softmax": 0.9821456074714661
+    },
+    {
+      "asset_id": "rocky_trail_02",
+      "weak_label": "stone",
+      "prediction": "stone",
+      "max_softmax": 0.9468449354171753
+    },
+    {
+      "asset_id": "ambientcg:Facade002",
+      "weak_label": "glass",
+      "prediction": "glass",
+      "max_softmax": 0.9996019005775452
+    },
+    {
+      "asset_id": "synthetic_wood",
+      "weak_label": "wood",
+      "prediction": "metal",
+      "max_softmax": 0.8641983866691589
+    },
+    {
+      "asset_id": "castle_brick_02_white",
+      "weak_label": "coating",
+      "prediction": "stone",
+      "max_softmax": 0.6722233891487122
+    },
+    {
+      "asset_id": "painted_metal_shutter",
+      "weak_label": "metal",
+      "prediction": "metal",
+      "max_softmax": 0.8182840943336487
+    },
+    {
+      "asset_id": "plywood",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.9428637623786926
+    },
+    {
+      "asset_id": "painted_plaster_wall",
+      "weak_label": "coating",
+      "prediction": "coating",
+      "max_softmax": 0.7141939401626587
+    },
+    {
+      "asset_id": "denim_fabric_03",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.9002026915550232
+    },
+    {
+      "asset_id": "blue_painted_planks",
+      "weak_label": "coating",
+      "prediction": "wood",
+      "max_softmax": 0.9139527082443237
+    },
+    {
+      "asset_id": "ambientcg:Plastic018B",
+      "weak_label": "polymer",
+      "prediction": "polymer",
+      "max_softmax": 0.7712216973304749
+    },
+    {
+      "asset_id": "stretch_poplin",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.9461649060249329
+    },
+    {
+      "asset_id": "velour_velvet",
+      "weak_label": "leather",
+      "prediction": "textile",
+      "max_softmax": 0.9561998248100281
+    },
+    {
+      "asset_id": "herringbone_parquet",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.9273142218589783
+    },
+    {
+      "asset_id": "ambientcg:Plastic011",
+      "weak_label": "polymer",
+      "prediction": "polymer",
+      "max_softmax": 0.9891691207885742
+    },
+    {
+      "asset_id": "castle_wall_slates",
+      "weak_label": "stone",
+      "prediction": "stone",
+      "max_softmax": 0.9925629496574402
+    },
+    {
+      "asset_id": "curly_teddy_natural",
+      "weak_label": "textile",
+      "prediction": "textile",
+      "max_softmax": 0.9968593120574951
+    },
+    {
+      "asset_id": "ambientcg:Leather033A",
+      "weak_label": "leather",
+      "prediction": "leather",
+      "max_softmax": 0.985414981842041
+    }
+  ],
+  "runtime_seconds": 2.3,
+  "unknown_rejection_catalog_proxy": {
+    "in_domain_count": 79,
+    "out_domain_count": 39,
+    "in_mean_max_softmax": 0.8694,
+    "out_mean_max_softmax": 0.688,
+    "thresholds": [
+      {
+        "threshold": 0.5,
+        "in_domain_accept_rate": 0.9494,
+        "out_domain_false_accept_rate": 0.7692,
+        "in_accepted": 75,
+        "out_accepted": 30
+      },
+      {
+        "threshold": 0.65,
+        "in_domain_accept_rate": 0.8734,
+        "out_domain_false_accept_rate": 0.6667,
+        "in_accepted": 69,
+        "out_accepted": 26
+      },
+      {
+        "threshold": 0.8,
+        "in_domain_accept_rate": 0.7468,
+        "out_domain_false_accept_rate": 0.359,
+        "in_accepted": 59,
+        "out_accepted": 14
+      },
+      {
+        "threshold": 0.9,
+        "in_domain_accept_rate": 0.6076,
+        "out_domain_false_accept_rate": 0.2051,
+        "in_accepted": 48,
+        "out_accepted": 8
+      }
+    ],
+    "warning": "Softmax is not calibrated. Proxy-only diagnostics; NOT evidence of safe unknown rejection in production.",
+    "excluded_catalog_categories": {
+      "concrete": 36,
+      "other": 1,
+      "paper": 1,
+      "composite": 1
+    }
+  },
+  "onnx_export": {
+    "success": true,
+    "max_abs_logit_diff": 9.775161743164062e-06,
+    "bytes": 3748564
+  }
+}
