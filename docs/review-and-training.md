@@ -2,10 +2,10 @@
 
 ## What is available
 
-The Poly Haven CC0 source registry is stored at `training/external/polyhaven_cc0_staging/provenance.json`.
+CC0 source registries are stored at `training/external/polyhaven_cc0_staging/provenance.json` and `training/external/ambientcg_cc0_staging/provenance.json`.
 All catalog-discovered labels are **suggestions, not training targets**. The sources include architectural/CG textures and sometimes procedural assets, not necessarily photographed automotive substrates.
 
-Review app: `/apps/review/` in the deployed GitHub Pages site. Source attribution to Poly Haven is shown in the UI.
+Review app: `/apps/review/` in the deployed GitHub Pages site. Source attribution to Poly Haven or ambientCG is shown for each record. Many ambientCG references are procedural rather than photographs.
 
 ## Review procedure
 
@@ -25,7 +25,7 @@ python training/external/build_reviewed_dataset.py \
 python training/audit_dataset.py --data training/reviewed_data
 ```
 
-The builder fails when any included family has fewer than 15 approved samples. It verifies source license metadata, image checksums, reviewer information, and no cross-split SHA/group leakage. It produces a manifest and split folders usable by `training/train_classifier.py`.
+The builder merges both CC0 source registries and fails when any included family has fewer than 15 explicitly approved samples. It verifies source license metadata, image checksums, reviewer information, and no cross-split SHA/group leakage. It produces a manifest and split folders usable by `training/train_classifier.py`.
 
 **Important:** 15 samples per class is a structural gate, not a statistical accuracy benchmark. For real deployment, collect many more independent material samples, varied lighting/cameras, tactile and physical supplier verification where needed, and held-out real-world photographs.
 
