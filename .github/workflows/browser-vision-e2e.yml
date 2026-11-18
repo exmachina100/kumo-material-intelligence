@@ -22,7 +22,7 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Assemble local deployed site
         run: |
-          mkdir -p site/apps site/packages site/models/research site/vendor/ort
+          mkdir -p site/apps site/packages site/models/research site/models/research-expanded site/vendor/ort
           cp -R apps/demo site/apps/demo
           cp -R apps/review site/apps/review
           cp -R apps/research site/apps/research
@@ -30,6 +30,7 @@ jobs:
           cp -R packages/material-dna site/packages/material-dna
           cp -R packages/inference-sdk site/packages/inference-sdk
           cp models/research/manifest.json models/research/labels.json models/research/vision-probe-research.onnx site/models/research/
+          cp models/research-expanded/manifest.json models/research-expanded/labels.json models/research-expanded/vision-probe-research.onnx site/models/research-expanded/
           cp node_modules/onnxruntime-web/dist/ort.min.js site/vendor/ort/
           cp node_modules/onnxruntime-web/dist/ort-wasm*.wasm site/vendor/ort/
           cp node_modules/onnxruntime-web/dist/ort-wasm*.mjs site/vendor/ort/
