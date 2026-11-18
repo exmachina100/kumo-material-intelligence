@@ -1,0 +1,13 @@
+{
+  "total": 89,
+  "counts_by_query": {
+    "polymer": 24,
+    "rubber": 4,
+    "textile": 24,
+    "leather": 24,
+    "glass": 12,
+    "composite": 1
+  },
+  "failures": [],
+  "note": "Unreviewed CC0 thumbnails. Source techniques include procedural and photographic materials. No physical substrate verification."
+}
