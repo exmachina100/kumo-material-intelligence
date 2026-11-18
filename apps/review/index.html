@@ -23,7 +23,7 @@ label{display:block;font-size:12px;color:#aebac0;margin-top:10px}label input,lab
 </style></head><body><main class="app">
 <header><div><div class="eyebrow">KUMO LABS · MATERIAL INTELLIGENCE</div><div class="hint">Reference review / Dataset governance · Beta</div></div><a href="../demo/">CMF Workstation</a></header>
 <h1>Understand before training.</h1>
-<p class="hint">Review CC0 reference images individually. Catalog suggestions are not material truth. Confirm only what you can justify visually or from reliable source evidence. Decisions are stored in this browser and can be exported as a review file; images are not uploaded.</p>
+<p class="hint">Review CC0 reference images from Poly Haven and ambientCG individually. Catalog suggestions are not material truth. Confirm only what you can justify visually or from reliable source evidence. Decisions are stored in this browser and can be exported as a review file; images are not uploaded.</p>
 <div class="toolbar"><div id="stats" class="chip">Loading…</div><input type="search" id="search" placeholder="Search title, category, or asset ID" aria-label="Search references">
 <select id="filter" aria-label="Review status"><option value="all">All</option><option value="pending">Pending</option><option value="include">Reviewed</option><option value="exclude">Excluded</option><option value="uncertain">Uncertain</option></select>
 <input type="text" id="reviewer" placeholder="Reviewer identifier" aria-label="Reviewer name or identifier">
@@ -37,7 +37,7 @@ label{display:block;font-size:12px;color:#aebac0;margin-top:10px}label input,lab
 <label>Review notes<textarea id="notes" placeholder="What visible cues or reliable evidence support the label? Note ambiguity and surface treatment."></textarea></label>
 <div class="actions"><button id="approve">Approve label</button><button id="uncertain" class="muted">Needs more evidence</button><button id="exclude" class="muted">Exclude</button><button id="next" class="muted">Next</button></div>
 <div class="info" id="feedback"></div>
-<div class="micro">Original source: <a id="sourceLink" href="#" target="_blank" rel="noopener noreferrer">View Poly Haven asset</a>. Material images are from Poly Haven and are provided under CC0. Source names remain attached to every review.</div>
+<div class="micro">Original source: <a id="sourceLink" href="#" target="_blank" rel="noopener noreferrer">View source asset</a>. Poly Haven and ambientCG previews are offered under CC0. Source names remain attached to every review.</div>
 </section></div></main>
 <script type="module">
 import {FAMILIES} from '../../packages/material-dna/src/index.mjs';
@@ -45,7 +45,11 @@ import {makeReview,validateReview} from '../../packages/material-dna/src/review.
 import {importReviewBundle,mergeReviews,exportReviewBundle,summarizeReviewQuality} from '../../packages/material-dna/src/review-bundle.mjs';
 const $=id=>document.getElementById(id),KEY='kumo-cmf-review-v1';
 let assets=[],selected=0;let reviews=new Map();
-const root=new URL('../../training/external/polyhaven_cc0_staging/',location.href);
+const sourceDirs={
+ 'Poly Haven':new URL('../../training/external/polyhaven_cc0_staging/',location.href),
+ 'ambientCG':new URL('../../training/external/ambientcg_cc0_staging/',location.href)
+};
+const imageUrl=a=>new URL(encodeURIComponent(a.path),sourceDirs[a.source]).href;
 const state=()=>[...reviews.values()];
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state()))}catch{$('feedback').textContent='Browser storage is full; export your reviews.'}}
 function read(){try{for(const x of JSON.parse(localStorage.getItem(KEY)||'[]'))if(x?.asset_id)reviews.set(x.asset_id,x)}catch{}}
@@ -55,7 +59,7 @@ function render(){
  const s=summarizeReviewQuality(assets,reviews);$('stats').textContent=assets.length+' refs · '+s.included+' approved · '+s.pending+' pending · '+s.sourceVerified+' source-verified';
  const gallery=$('gallery');gallery.replaceChildren();for(const a of filtered()){
   const tile=document.createElement('button');tile.className='tile '+(reviews.get(a.asset_id)?.decision||'')+(assets[selected]?.asset_id===a.asset_id?' current':'');
-  const img=document.createElement('img');img.loading='lazy';img.src=new URL(encodeURIComponent(a.path),root).href;img.alt='Material '+a.asset_id;
+  const img=document.createElement('img');img.loading='lazy';img.src=imageUrl(a);img.alt='Material '+a.asset_id;
   const txt=document.createElement('span');txt.textContent=a.title||a.asset_id;tile.append(img,txt);tile.onclick=()=>select(a.asset_id);gallery.append(tile);
  }
 }
@@ -64,7 +68,7 @@ function select(id){
  const a=assets[idx],r=reviews.get(a.asset_id);
  $('preview').src=new URL(encodeURIComponent(a.path),root).href;$('preview').alt=a.title||a.asset_id;
  $('name').textContent=a.title||a.asset_id;
- $('source').textContent='Poly Haven · CC0 · '+(a.catalog_category||'Uncategorized');
+ $('source').textContent=a.source+' · CC0 · '+(a.catalog_category||a.catalog_suggestion||'Uncategorized');
  $('hint').textContent='Catalog hint: '+(a.catalog_suggestion||'none')+' · Review: '+(r?.decision||'pending');
  $('sourceLink').href=a.source_page;
  $('family').value=r?.family||'';$('evidence').value=r?.evidence||'visual-only';
@@ -101,11 +105,14 @@ $('importFile').onchange=async e=>{
 };
 read();
 try{
- const response=await fetch(new URL('provenance.json',root),{cache:'no-store'});
- if(!response.ok)throw new Error('Cannot load material provenance: HTTP '+response.status);
- const data=await response.json();
- if(!Array.isArray(data))throw new Error('Invalid source registry');
- assets=data.filter(a=>a.asset_id&&/^[\w-]+\.jpg$/.test(a.path)&&a.source==='Poly Haven').sort((a,b)=>a.asset_id.localeCompare(b.asset_id));
+ const results=await Promise.all(Object.entries(sourceDirs).map(async([provider,dir])=>{
+  const response=await fetch(new URL('provenance.json',dir),{cache:'no-store'});
+  if(!response.ok)throw new Error(provider+' provenance unavailable: HTTP '+response.status);
+  const items=await response.json();
+  if(!Array.isArray(items))throw new Error('Invalid '+provider+' registry');
+  return items.filter(a=>a.asset_id&&/^[\\w-]+\\.jpg$/.test(a.path)&&a.source===provider);
+ }));
+ assets=results.flat().sort((a,b)=>a.source.localeCompare(b.source)||a.asset_id.localeCompare(b.asset_id));
  if(!assets.length)throw new Error('No source images available');
  const verified=new Set(assets.map(a=>a.asset_id));
  reviews=new Map([...reviews].filter(([id,r])=>validateReview(r,verified).valid));
