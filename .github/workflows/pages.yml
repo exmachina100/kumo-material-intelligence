@@ -5,6 +5,7 @@ on:
     branches: [main]
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 concurrency:
@@ -34,6 +35,32 @@ jobs:
           cp -R packages/inference-sdk site/packages/inference-sdk
           mkdir -p site/training/external
           cp -R training/external/polyhaven_cc0_staging site/training/external/polyhaven_cc0_staging
+          mkdir -p site/models/research
+          cp models/research/manifest.json site/models/research/manifest.json
+      - name: Stage pinned research-only ONNX model
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 44160302007 -n materialnet-vision-probe-research-onnx -D site/models/research
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path("site/models/research")
+          manifest=json.loads((root/"manifest.json").read_text())
+          assert manifest["approved"] is False
+          assert manifest["releaseEligible"] is False
+          assert manifest["expertReviewed"] is False
+          assert manifest["sourceWorkflowRun"]==44160302007
+          actual=(root/manifest["weights"]).read_bytes()
+          assert len(actual)==manifest["bytes"],"Model size mismatch"
+          assert hashlib.sha256(actual).hexdigest()==manifest["sha256"],"Model checksum mismatch"
+          labels=json.loads((root/"labels.json").read_text())
+          assert labels==manifest["labels"],"Model labels mismatch"
+          assert (root/"evaluation.json").is_file(),"Evaluation report missing"
+          print("Pinned research model staged with matching SHA-256 and labels")
+          PY
+      - name: Finalize static website
+        run: |
           touch site/.nojekyll
           printf '<meta http-equiv="refresh" content="0; url=apps/demo/"><a href="apps/demo/">Open Kumo CMF</a>' > site/index.html
       - uses: actions/configure-pages@v5
