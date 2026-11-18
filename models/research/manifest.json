@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "0.1.0",
+  "kind": "experimental-catalog-proxy",
+  "modelName": "MaterialNet Vision Probe",
+  "version": "research-2026-11-17",
+  "weights": "vision-probe-research.onnx",
+  "sha256": "bf0bb2ace186ca3bf582969903d54a02424e560130567672642421fde9b7971e",
+  "bytes": 3739330,
+  "labels": [
+    "ceramic",
+    "coating",
+    "leather",
+    "metal",
+    "stone",
+    "wood"
+  ],
+  "inputSize": 224,
+  "sourceWorkflowRun": 44160302007,
+  "runtime": "onnxruntime-web@1.20.1",
+  "approved": false,
+  "releaseEligible": false,
+  "expertReviewed": false,
+  "limitations": "Weak Poly Haven catalog labels, no validated calibration or smartphone preprocessing parity. No physical material verification.",
+  "measures": {
+    "proxyAccuracy": 0.7727272727272727,
+    "proxyMacroF1": 0.7566137566137566,
+    "holdoutSize": 22
+  },
+  "displayPolicy": {
+    "requiresOptIn": true,
+    "minimumRawScore": 0.85,
+    "minimumCropAgreement": 0.75,
+    "requiresDesignerConfirmation": true
+  }
+}
