@@ -1,0 +1,41 @@
+name: Browser E2E - on-device material vision
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tests/browser-vision.e2e.mjs'
+      - '.github/workflows/browser-vision-e2e.yml'
+permissions:
+  contents: read
+jobs:
+  infer-in-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned ONNX runtime and Playwright
+        run: npm install --no-save --ignore-scripts onnxruntime-web@1.20.1 playwright@1.56.1
+      - name: Install headless Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Assemble local deployed site
+        run: |
+          mkdir -p site/apps site/packages site/models/research site/vendor/ort
+          cp -R apps/demo site/apps/demo
+          cp -R apps/review site/apps/review
+          cp -R apps/research site/apps/research
+          cp -R packages/cmf-core site/packages/cmf-core
+          cp -R packages/material-dna site/packages/material-dna
+          cp -R packages/inference-sdk site/packages/inference-sdk
+          cp models/research/manifest.json models/research/labels.json models/research/vision-probe-research.onnx site/models/research/
+          cp node_modules/onnxruntime-web/dist/ort.min.js site/vendor/ort/
+          cp node_modules/onnxruntime-web/dist/ort-wasm*.wasm site/vendor/ort/
+          cp node_modules/onnxruntime-web/dist/ort-wasm*.mjs site/vendor/ort/
+      - name: Test actual in-browser ONNX identification
+        run: |
+          python3 -m http.server 8080 --bind 127.0.0.1 --directory site >/tmp/kumo-http.log 2>&1 &
+          echo $! >/tmp/kumo-server.pid
+          sleep 2
+          node tests/browser-vision.e2e.mjs
