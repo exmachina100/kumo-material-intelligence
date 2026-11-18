@@ -36,6 +36,7 @@ jobs:
           cp -R packages/inference-sdk site/packages/inference-sdk
           mkdir -p site/training/external
           cp -R training/external/polyhaven_cc0_staging site/training/external/polyhaven_cc0_staging
+          cp -R training/external/ambientcg_cc0_staging site/training/external/ambientcg_cc0_staging
           mkdir -p site/vendor/ort
           cp node_modules/onnxruntime-web/dist/ort.min.js site/vendor/ort/
           cp node_modules/onnxruntime-web/dist/ort-wasm*.wasm site/vendor/ort/
