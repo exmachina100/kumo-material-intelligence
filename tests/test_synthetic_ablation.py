@@ -2,13 +2,20 @@
 import copy,hashlib,importlib.util,io,json,sys,unittest,zipfile
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from PIL import Image
+# The lightweight general CI runner does not install PyTorch. These integration
+# tests are run in the dedicated model-training workflow after dependencies.
+HAS_HEAVY=all(importlib.util.find_spec(name) is not None for name in ("PIL","torch","torchvision","sklearn","numpy"))
+if HAS_HEAVY:
+    from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT/"training/experiments"))
-spec=importlib.util.spec_from_file_location("ablation",ROOT/"training/experiments/synthetic_ablation.py")
-module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+if HAS_HEAVY:
+    sys.path.insert(0,str(ROOT/"training/experiments"))
+    spec=importlib.util.spec_from_file_location("ablation",ROOT/"training/experiments/synthetic_ablation.py")
+    module=importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
 
+@unittest.skipUnless(HAS_HEAVY,"Heavy ML dependencies are tested in the dedicated model-training workflow")
 class SyntheticAblationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
