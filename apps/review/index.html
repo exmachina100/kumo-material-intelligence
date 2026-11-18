@@ -66,7 +66,7 @@ function render(){
 function select(id){
  const idx=assets.findIndex(x=>x.asset_id===id);if(idx<0)return;selected=idx;
  const a=assets[idx],r=reviews.get(a.asset_id);
- $('preview').src=new URL(encodeURIComponent(a.path),root).href;$('preview').alt=a.title||a.asset_id;
+ $('preview').src=imageUrl(a);$('preview').alt=a.title||a.asset_id;
  $('name').textContent=a.title||a.asset_id;
  $('source').textContent=a.source+' · CC0 · '+(a.catalog_category||a.catalog_suggestion||'Uncategorized');
  $('hint').textContent='Catalog hint: '+(a.catalog_suggestion||'none')+' · Review: '+(r?.decision||'pending');
