@@ -7,7 +7,8 @@ import {spawnSync} from 'node:child_process';
 const entrypoints=[
   'apps/demo/index.html',
   'apps/review/index.html',
-  'apps/research/index.html'
+  'apps/research/index.html',
+  'apps/synthetic/index.html'
 ];
 for(const page of entrypoints){
   test(page+' inline JavaScript parses and local imports resolve',()=>{
@@ -25,9 +26,9 @@ for(const page of entrypoints){
     }
   });
 }
-test('GitHub Pages workflow deploys all three CMF applications',()=>{
+test('GitHub Pages workflow deploys all four CMF applications',()=>{
   const workflow=readFileSync('.github/workflows/pages.yml','utf8');
-  for(const app of ['demo','review','research']){
+  for(const app of ['demo','review','research','synthetic']){
     assert.ok(workflow.includes('cp -R apps/'+app+' site/apps/'+app),
       'GitHub Pages must deploy '+app);
   }
