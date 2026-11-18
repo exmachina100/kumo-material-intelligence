@@ -1,39 +1,48 @@
-"""Auditable weak-label experiment selection. Uses only Python standard library.
+"""Source-aware, license-audited weak-label CMF dataset selection.
 
-Source catalog categories are weak labels, not expert-approved physical truth.
+Material families are catalog discovery hints, not expert-verified ground truth.
+All records are split by source asset ID and SHA. Do not report real-world accuracy.
 """
 from collections import Counter
 from pathlib import Path
-import hashlib
-import json
+import hashlib,json
 
-ALLOWED = {"metal","polymer","leather","textile","wood","stone","ceramic","glass","rubber","coating","paper"}
+ALLOWED={"metal","polymer","leather","textile","wood","stone","ceramic",
+         "glass","rubber","coating","paper","composite"}
+SOURCES={"Poly Haven","ambientCG"}
 
-def select_catalog_samples(source: Path, min_per_class: int = 8):
-    records = json.loads((source / "provenance.json").read_text(encoding="utf-8"))
-    results, seen_id, seen_hash = [], set(), set()
-    for record in records:
-        label = record.get("catalog_suggestion")
-        if label not in ALLOWED or record.get("license") != "CC0" or record.get("source") != "Poly Haven":
+def select_multisource_samples(source_folders, min_per_class=8):
+    candidates=[];seen_ids=set();seen_hashes=set()
+    for folder in map(Path,source_folders):
+        if not (folder/"provenance.json").is_file():
             continue
-        asset_id, name = record.get("asset_id"), record.get("path")
-        if not isinstance(asset_id,str) or not asset_id or asset_id in seen_id:
-            continue
-        if not isinstance(name,str) or not name.endswith(".jpg") or Path(name).name != name:
-            continue
-        p = source / name
-        if not p.is_file():
-            continue
-        digest = hashlib.sha256(p.read_bytes()).hexdigest()
-        if digest != record.get("sha256") or digest in seen_hash:
-            continue
-        seen_id.add(asset_id)
-        seen_hash.add(digest)
-        results.append({"asset_id":asset_id,"path":str(p),"weak_label":label,
-                        "source_page":record.get("source_page"),"sha256":digest})
-    counts = Counter(x["weak_label"] for x in results)
-    filtered = [x for x in results if counts[x["weak_label"]] >= min_per_class]
-    filtered.sort(key=lambda x:x["asset_id"])
-    if len({x["weak_label"] for x in filtered}) < 2 or len(filtered) < 20:
-        raise ValueError("At least two categories and 20 checked assets are required")
+        records=json.loads((folder/"provenance.json").read_text(encoding="utf-8"))
+        if not isinstance(records,list):raise ValueError("Expected source provenance array")
+        for item in records:
+            label=item.get("catalog_suggestion")
+            if label not in ALLOWED or item.get("license")!="CC0" or item.get("source") not in SOURCES:
+                continue
+            aid,name=item.get("asset_id"),item.get("path")
+            if not isinstance(aid,str) or not aid or aid in seen_ids:continue
+            if not isinstance(name,str) or not name.endswith(".jpg") or Path(name).name!=name:continue
+            path=folder/name
+            if not path.is_file():continue
+            digest=hashlib.sha256(path.read_bytes()).hexdigest()
+            if digest!=item.get("sha256") or digest in seen_hashes:continue
+            seen_ids.add(aid);seen_hashes.add(digest)
+            candidates.append({
+                "asset_id":aid,"path":str(path),"weak_label":label,
+                "source":item["source"],"source_page":item.get("source_page"),
+                "sha256":digest,
+                "capture_technique":item.get("source_capture_technique",item.get("capture_method")),
+                "is_real_material_capture":item.get("is_real_material_capture")
+            })
+    counts=Counter(row["weak_label"] for row in candidates)
+    filtered=[row for row in candidates if counts[row["weak_label"]]>=min_per_class]
+    filtered.sort(key=lambda row:row["asset_id"])
+    if len({row["weak_label"] for row in filtered})<2 or len(filtered)<20:
+        raise ValueError("Need at least two categories and 20 licensed source images")
     return filtered
+
+def select_catalog_samples(source: Path,min_per_class=8):
+    return select_multisource_samples([source],min_per_class)
