@@ -5,7 +5,6 @@ on:
     branches: [main]
 permissions:
   contents: read
-  actions: read
   pages: write
   id-token: write
 concurrency:
@@ -37,27 +36,23 @@ jobs:
           cp -R training/external/polyhaven_cc0_staging site/training/external/polyhaven_cc0_staging
           mkdir -p site/models/research
           cp models/research/manifest.json site/models/research/manifest.json
-      - name: Stage pinned research-only ONNX model
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Stage repository-hosted verified research model
         run: |
-          gh run download 44160302007 -n materialnet-vision-probe-research-onnx -D site/models/research
+          cp models/research/vision-probe-research.onnx site/models/research/vision-probe-research.onnx
+          cp models/research/labels.json site/models/research/labels.json
+          cp models/research/evaluation.json site/models/research/evaluation.json
           python - <<'PY'
           import hashlib,json
           from pathlib import Path
-          root=Path("site/models/research")
-          manifest=json.loads((root/"manifest.json").read_text())
-          assert manifest["approved"] is False
-          assert manifest["releaseEligible"] is False
-          assert manifest["expertReviewed"] is False
-          assert manifest["sourceWorkflowRun"]==44160302007
-          actual=(root/manifest["weights"]).read_bytes()
-          assert len(actual)==manifest["bytes"],"Model size mismatch"
-          assert hashlib.sha256(actual).hexdigest()==manifest["sha256"],"Model checksum mismatch"
-          labels=json.loads((root/"labels.json").read_text())
-          assert labels==manifest["labels"],"Model labels mismatch"
-          assert (root/"evaluation.json").is_file(),"Evaluation report missing"
-          print("Pinned research model staged with matching SHA-256 and labels")
+          root=Path('site/models/research')
+          m=json.loads((root/'manifest.json').read_text())
+          assert m['approved'] is False and m['releaseEligible'] is False and m['expertReviewed'] is False
+          data=(root/m['weights']).read_bytes()
+          assert len(data)==m['bytes']
+          assert hashlib.sha256(data).hexdigest()==m['sha256']
+          assert json.loads((root/'labels.json').read_text())==m['labels']
+          assert json.loads((root/'evaluation.json').read_text())['release_eligible'] is False
+          print('Research model release checks passed; keeping production classification disabled.')
           PY
       - name: Finalize static website
         run: |
