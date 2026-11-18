@@ -36,6 +36,8 @@ export class OnnxMaterialClassifier {
   const max=Math.max(...logits),exps=logits.map(v=>Math.exp(v-max)),sum=exps.reduce((a,b)=>a+b,0);
   if(!Number.isFinite(sum)||sum<=0)throw new Error('Invalid logits');
   const probs=exps.map(v=>v/sum),index=probs.indexOf(Math.max(...probs));
-  return {family:this.labels[index],confidence:probs[index],finish:null};
+  const alternatives=probs.map((rawSoftmax,i)=>({family:this.labels[i],rawSoftmax}))
+   .sort((a,b)=>b.rawSoftmax-a.rawSoftmax).slice(0,3);
+  return {family:this.labels[index],confidence:probs[index],finish:null,alternatives};
  }
 }
