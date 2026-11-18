@@ -1,0 +1,79 @@
+name: Preserve 10-family experimental CMF vision model
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/publish-expanded-research.yml'
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: publish-expanded-vision
+  cancel-in-progress: true
+jobs:
+  preserve:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch completed 10-family research artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p models/research-expanded
+          gh run download 44269713611 -n materialnet-vision-probe-research-onnx -D models/research-expanded
+      - name: Verify weak-label evaluation and generate immutable manifest
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('models/research-expanded')
+          report=json.loads((root/'evaluation.json').read_text())
+          labels=json.loads((root/'labels.json').read_text())
+          assert report['experiment']=='vision-probe-0.3-multisource'
+          assert report['status']=='RESEARCH_ONLY' and report['release_eligible'] is False
+          assert report['expert_reviewed'] is False
+          assert report['dataset']['samples']>=300
+          assert len(labels)==10 and labels==report['classes']
+          assert report['macro_f1_vs_proxy']>=0.65
+          assert report['onnx_export']['success'] is True
+          weights=root/'vision-probe-research.onnx'
+          binary=weights.read_bytes()
+          sha=hashlib.sha256(binary).hexdigest()
+          manifest={
+            'schemaVersion':'0.1.0','kind':'experimental-catalog-proxy',
+            'modelName':'MaterialNet Vision Probe - Expanded CC0',
+            'version':'research-2026-11-18-10families',
+            'weights':weights.name,'sha256':sha,'bytes':len(binary),
+            'labels':labels,'inputSize':224,
+            'sourceWorkflowRun':44269713611,
+            'runtime':'onnxruntime-web@1.20.1',
+            'approved':False,'releaseEligible':False,'expertReviewed':False,
+            'measures':{'proxyAccuracy':report['accuracy_vs_proxy'],
+                        'proxyMacroF1':report['macro_f1_vs_proxy'],
+                        'holdoutSize':report['dataset']['test'],
+                        'sourceBreakdown':report['by_source_weak_label_metrics']},
+            'dataset':report['dataset'],
+            'displayPolicy':{'requiresOptIn':True,'minimumRawScore':0.85,
+                             'minimumCropAgreement':0.75,'requiresDesignerConfirmation':True},
+            'limitations':'Unreviewed Poly Haven and ambientCG catalog image labels; procedural/rendered preview bias; unknown-material misclassification risk. Not physically verified CMF identification.'
+          }
+          (root/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          print('Packaged',len(binary),'bytes',sha,'classes:',labels)
+          PY
+      - name: Commit expanded research model and provenance
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f models/research-expanded/manifest.json models/research-expanded/vision-probe-research.onnx models/research-expanded/labels.json models/research-expanded/evaluation.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Preserve 10-family research-only vision ONNX and weak-label benchmark'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 2
+          done
+          exit 1
