@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#141718">
+<title>KUMO · GPT Material Stream</title>
+<style>
+:root{font:14px/1.55 Inter,ui-sans-serif,system-ui,sans-serif;background:#141718;color:#f0f1ee}
+*{box-sizing:border-box}body{margin:0}
+main{max-width:1230px;margin:0 auto;padding:24px}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;border-bottom:1px solid #414847;padding-bottom:20px}
+.wordmark{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#a0b8ab}
+nav{display:flex;flex-wrap:wrap;gap:15px}a{color:#b9d7c8;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:clamp(34px,6vw,66px);letter-spacing:-.055em;line-height:1.06;margin:43px 0 13px}
+.lead{font-size:15px;color:#b6bdb9;max-width:780px;line-height:1.7}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:33px 0 25px}
+.metric{border:1px solid #3f4745;border-radius:12px;padding:19px;background:#1e2424}
+.metric b{display:block;font-size:32px;letter-spacing:-.03em}
+.metric small{display:block;color:#a7b5ae;margin-top:3px}
+section{margin-top:34px}
+h2{font-size:16px;font-weight:620;letter-spacing:-.01em;margin:0 0 15px}
+.empty{padding:36px;background:#1e2524;border:1px solid #3d4843;border-radius:16px;max-width:780px}
+.empty p{color:#b5c0b9}
+.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#d4e4dd;background:#2a3531;padding:3px 6px;border-radius:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.card{background:#1e2424;border:1px solid #3b4642;border-radius:15px;overflow:hidden}
+.card img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;background:#252d2a}
+.inner{padding:17px}.inner h3{font-size:16px;margin:2px 0 9px;font-weight:680}
+.tiny{font-size:12px;color:#aab6af}
+.tag{display:inline-block;padding:4px 9px;margin:3px 4px 3px 0;border-radius:7px;background:#2d3935;color:#d4e1db;font-size:11px}
+.link{display:inline-flex;margin-top:12px;padding:9px 12px;background:#bed5c8;color:#1b2e24;border-radius:7px;font-weight:600;font-size:12px}
+.warning{border-left:2px solid #bb9b6e;padding-left:16px;margin:29px 0;color:#c3b49c;max-width:870px;font-size:12px}
+small{color:#aab5af}
+@media(max-width:630px){main{padding:16px}.cols{grid-template-columns:1fr 1fr}.cols>:last-child{grid-column:span 2}h1{margin-top:29px}}
+</style>
+</head>
+<body>
+<main>
+<header class="top">
+ <div><div class="wordmark">KUMO LABS · MATERIAL INTELLIGENCE</div><small>Synthetic research / GPT image stream</small></div>
+ <nav><a href="../demo/">Workstation</a><a href="../review/">Material review</a><a href="https://github.com/exmachina100/kumo-material-intelligence/actions/workflows/gpt-material-drip.yml" target="_blank" rel="noopener noreferrer">Automation status</a></nav>
+</header>
+<h1>Surface studies,<br>continuously.</h1>
+<p class="lead">An auditable stream of GPT-generated CMF texture studies. Daily batches rotate through 13 material intentions, are quality-checked, and are delivered as GitHub Release archives. Generation uses a separately billed API key; no photograph is silently treated as physical material evidence.</p>
+<div class="cols">
+ <div class="metric"><small>Generated samples delivered</small><b id="images">—</b><small>Release archives, synthetic only</small></div>
+ <div class="metric"><small>Published batches</small><b id="batches">—</b><small>Recorded with prompt provenance</small></div>
+ <div class="metric"><small>Stream state</small><b id="state" style="font-size:19px;padding-top:12px">Checking…</b><small>GitHub Actions · Daily 09:10 IST</small></div>
+</div>
+<section>
+ <h2>Recent batches</h2>
+ <div id="feed" class="grid" aria-live="polite"></div>
+ <div id="empty" class="empty" hidden>
+  <h2>Ready to generate; waiting for the first billed batch</h2>
+  <p>The recurring GitHub workflow is installed and dry-run tested. To begin real background generation, add the repository Actions secret <span class="code">OPENAI_API_KEY</span>. Then trigger a small two-image first run with dry-run disabled.</p>
+  <a class="link" href="https://github.com/exmachina100/kumo-material-intelligence/settings/secrets/actions" target="_blank" rel="noopener noreferrer">Configure API key</a>
+  <p class="tiny">OpenAI API billing is separate from your ChatGPT plan. Generated materials will appear here after a successful scheduled Release.</p>
+ </div>
+</section>
+<p class="warning"><strong>Dataset integrity:</strong> These are AI-generated synthetic images with prompt-intended families. They may assist train-only experiments after review. They must never be used to validate physical substrate identification, judge real-world accuracy, or make material compliance or sustainability claims.</p>
+</main>
+<script type="module">
+const $=id=>document.getElementById(id);
+const root=new URL('../../training/gpt_synthetic/',location.href);
+try{
+ const response=await fetch(new URL('index.json',root),{cache:'no-store'});
+ if(!response.ok)throw Error('Index unavailable: HTTP '+response.status);
+ const data=await response.json();
+ if(!Array.isArray(data.batches)||data.training_eligible!==false)throw Error('Invalid synthetic batch index');
+ $('images').textContent=String(data.total_samples);
+ $('batches').textContent=String(data.total_batches);
+ $('state').textContent=data.batches.length?'Delivering':'Not yet activated';
+ $('empty').hidden=!!data.batches.length;
+ for(const record of data.batches){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(record.date)||!record.preview.startsWith('previews/'))continue;
+  const item=document.createElement('article');item.className='card';
+  const img=document.createElement('img');img.loading='lazy';img.alt='Synthetic material preview batch '+record.date;
+  img.src=new URL(record.preview,root).href;
+  const inner=document.createElement('div');inner.className='inner';
+  const title=document.createElement('h3');title.textContent=record.date+' · '+record.count+' samples';
+  const note=document.createElement('p');note.className='tiny';note.textContent=record.model+' · AI-synthetic, unreviewed';
+  inner.append(title,note);
+  for(const [family,count] of Object.entries(record.families)){
+   const badge=document.createElement('span');badge.className='tag';badge.textContent=family+' ×'+count;inner.append(badge);
+  }
+  if(record.release_url.startsWith('https://github.com/exmachina100/kumo-material-intelligence/releases/tag/')){
+   const link=document.createElement('a');link.className='link';link.href=record.release_url;
+   link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open source archive';inner.append(link);
+  }
+  item.append(img,inner);$('feed').append(item);
+ }
+}catch(error){
+ $('images').textContent='—';$('batches').textContent='—';$('state').textContent='Source unavailable';
+ $('empty').hidden=false;
+ $('empty').querySelector('h2').textContent='Material stream status unavailable';
+ $('empty').querySelector('p').textContent=String(error.message||error);
+}
+</script>
+</body></html>
