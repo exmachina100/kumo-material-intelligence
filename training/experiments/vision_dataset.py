@@ -20,7 +20,10 @@ def select_multisource_samples(source_folders, min_per_class=8):
         if not isinstance(records,list):raise ValueError("Expected source provenance array")
         for item in records:
             label=item.get("catalog_suggestion")
-            if label not in ALLOWED or item.get("license")!="CC0" or item.get("source") not in SOURCES:
+            if (label not in ALLOWED or item.get("license")!="CC0" or
+                item.get("source") not in SOURCES or item.get("synthetic_generated") is True):
+                continue
+            if item.get("review_status")=="excluded":
                 continue
             aid,name=item.get("asset_id"),item.get("path")
             if not isinstance(aid,str) or not aid or aid in seen_ids:continue
@@ -32,6 +35,7 @@ def select_multisource_samples(source_folders, min_per_class=8):
             seen_ids.add(aid);seen_hashes.add(digest)
             candidates.append({
                 "asset_id":aid,"path":str(path),"weak_label":label,
+                "sample_group":item.get("sample_group") or f"{item['source']}:{aid}",
                 "source":item["source"],"source_page":item.get("source_page"),
                 "sha256":digest,
                 "capture_technique":item.get("source_capture_technique",item.get("capture_method")),
