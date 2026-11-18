@@ -1,0 +1,133 @@
+name: GPT CMF material image drip (synthetic research)
+on:
+  schedule:
+    # Every day at 09:10 India time; six independent image requests, billed to API key owner
+    - cron: '40 3 * * *'
+  workflow_dispatch:
+    inputs:
+      count:
+        description: 'GPT material images in this batch (API billed)'
+        required: false
+        type: choice
+        default: '6'
+        options: ['1','2','4','6','8','12']
+      dry_run:
+        description: 'Test without API requests'
+        required: false
+        type: boolean
+        default: true
+  push:
+    paths:
+      - 'training/gpt_synthetic/drip.py'
+      - 'tests/test_gpt_material_drip.py'
+      - '.github/workflows/gpt-material-drip.yml'
+permissions:
+  contents: write
+concurrency:
+  group: gpt-cmf-material-drip
+  cancel-in-progress: false
+jobs:
+  material-drip:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install image validation tools
+        run: python -m pip install "Pillow>=10,<13"
+      - name: Run deterministic image pipeline tests
+        run: |
+          python -m unittest discover -s tests -p 'test_gpt_material_drip.py' -v
+          python training/gpt_synthetic/drip.py --date 2026-11-18 --count 6 --dry-run
+      - name: Decide if a new batch should be generated
+        id: batch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COUNT: ${{ inputs.count || '6' }}
+          DRY_RUN_REQUESTED: ${{ inputs.dry_run || false }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "push" ] || [ "$DRY_RUN_REQUESTED" = "true" ]; then
+            echo "run_generation=false" >> "$GITHUB_OUTPUT"
+            echo "Tests and no-cost generation plan completed; no API charges"
+            exit 0
+          fi
+          DATE="$(date -u +%Y-%m-%d)"
+          TAG="gpt-cmf-$DATE"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "run_generation=false" >> "$GITHUB_OUTPUT"
+            echo "Batch $TAG already exists; idempotency guard prevents duplicate billing"
+            exit 0
+          fi
+          echo "run_generation=true" >> "$GITHUB_OUTPUT"
+          echo "batch_date=$DATE" >> "$GITHUB_OUTPUT"
+          echo "count=$REQUESTED_COUNT" >> "$GITHUB_OUTPUT"
+          echo "batch_tag=$TAG" >> "$GITHUB_OUTPUT"
+      - name: Generate GPT Image material macros
+        if: steps.batch.outputs.run_generation == 'true'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          COUNT: ${{ steps.batch.outputs.count }}
+          BATCH_DATE: ${{ steps.batch.outputs.batch_date }}
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::Configure OPENAI_API_KEY in Settings > Secrets and variables > Actions. No API charges occurred."
+            exit 2
+          fi
+          python training/gpt_synthetic/drip.py \
+            --date "$BATCH_DATE" --count "$COUNT" \
+            --model gpt-image-2.5-flare --quality medium \
+            --output "$RUNNER_TEMP/gpt-cmf-$BATCH_DATE"
+      - name: Upload generated batch as a workflow artifact
+        if: steps.batch.outputs.run_generation == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpt-cmf-material-synthetic-${{ steps.batch.outputs.batch_date }}
+          path: |
+            ${{ runner.temp }}/gpt-cmf-${{ steps.batch.outputs.batch_date }}.zip
+            ${{ runner.temp }}/gpt-cmf-${{ steps.batch.outputs.batch_date }}/manifest.json
+            ${{ runner.temp }}/gpt-cmf-${{ steps.batch.outputs.batch_date }}/preview.jpg
+          retention-days: 30
+      - name: Publish full-resolution image batch as a GitHub Release
+        if: steps.batch.outputs.run_generation == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.batch.outputs.batch_tag }}
+          BATCH_DATE: ${{ steps.batch.outputs.batch_date }}
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: |
+          gh release create "$TAG" \
+            "$RUNNER_TEMP/$TAG.zip" "$RUNNER_TEMP/$TAG/manifest.json" \
+            "$RUNNER_TEMP/$TAG/preview.jpg" \
+            --target main --title "GPT CMF Synthetic Materials - $BATCH_DATE" \
+            --notes "GPT Image texture samples for training research. AI-generated; unreviewed; not a real material capture; not CC0; not ground truth. Review and use in training-only splits, never val/test."
+      - name: Commit compact preview and source manifest
+        if: steps.batch.outputs.run_generation == 'true'
+        env:
+          BATCH_DATE: ${{ steps.batch.outputs.batch_date }}
+          TAG: ${{ steps.batch.outputs.batch_tag }}
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: |
+          mkdir -p training/gpt_synthetic/manifests training/gpt_synthetic/previews
+          cp "$RUNNER_TEMP/$TAG/manifest.json" "training/gpt_synthetic/manifests/$BATCH_DATE.json"
+          cp "$RUNNER_TEMP/$TAG/preview.jpg" "training/gpt_synthetic/previews/$BATCH_DATE.jpg"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add training/gpt_synthetic/manifests training/gpt_synthetic/previews
+          git commit -m "Record $TAG with generated CMF macro preview and provenance"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              echo "Daily sample ZIP and manifest delivered to GitHub"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::Release exists but metadata commit failed; inspect and recover"
+          exit 1
