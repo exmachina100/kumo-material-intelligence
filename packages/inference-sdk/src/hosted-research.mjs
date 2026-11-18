@@ -71,5 +71,17 @@ export async function identifyResearchMaterial(classifier,rgba,width,height,{min
   }
   predictions.push(await classifier.classify(subset,{width:crop.width,height:crop.height}));
  }
- return summarizeCropPredictions(predictions,{minimumScore,minimumAgreement});
+ const summary=summarizeCropPredictions(predictions,{minimumScore,minimumAgreement});
+ const averages=new Map();
+ for(const prediction of predictions){
+  const candidates=Array.isArray(prediction.alternatives)&&prediction.alternatives.length?
+   prediction.alternatives:[{family:prediction.family,rawSoftmax:prediction.confidence}];
+  for(const item of candidates){
+   if(typeof item.family!=='string'||!Number.isFinite(item.rawSoftmax))continue;
+   averages.set(item.family,(averages.get(item.family)||0)+item.rawSoftmax/predictions.length);
+  }
+ }
+ const hypotheses=[...averages].map(([family,rawMeanSoftmax])=>({family,rawMeanSoftmax}))
+   .sort((a,b)=>b.rawMeanSoftmax-a.rawMeanSoftmax).slice(0,3);
+ return {...summary,hypotheses};
 }
