@@ -12,14 +12,14 @@
 </head>
 <body>
 <main class="shell">
-<header><div><div class="brand">KUMO LABS / MATERIAL INTELLIGENCE</div><div class="sub">CMF workstation · local-first research preview 0.3 · <a href="../review/" style="color:#b9d7ca">Material review</a> · <a href="../research/" style="color:#b9d7ca">Vision lab</a></div></div><div class="sub" id="runtime">● On-device analysis</div></header>
+<header><div><div class="brand">KUMO LABS / MATERIAL INTELLIGENCE</div><div class="sub">CMF workstation · local-first vision research preview 0.5 · <a href="../review/" style="color:#b9d7ca">Material review</a> · <a href="../research/" style="color:#b9d7ca">Vision lab</a></div></div><div class="sub" id="runtime">● On-device analysis</div></header>
 <h1>From surface to<br>material intelligence.</h1>
 <p>Discover color structure, build editable Material DNA, and curate your own CMF library. Your images stay on this device.</p>
 <div class="grid">
 <section class="card"><h2>01 / Capture material</h2>
 <div class="drop" id="drop"><div><div style="font-size:28px;margin-bottom:8px">◈</div><b>Drop a surface image here</b><p>Or choose a file from your device</p><input id="file" type="file" accept="image/*" aria-label="Upload material image"></div></div>
 <div class="controls"><button id="camera" class="secondary">Capture material</button><input id="cameraFile" type="file" accept="image/*" capture="environment" hidden></div><img id="preview" alt="Selected material surface" hidden>
-<p class="notice">Visual material-family classification is not trained yet. You can identify a material manually; physical properties remain unverified.</p>
+<div class="card" style="padding:14px;margin-top:14px;background:#222a2b"><div style="font-weight:650;margin-bottom:5px">Experimental material vision</div><p class="notice">Recognizes six *catalog* families: ceramic, coating, leather, metal, stone, wood. Opt-in, research-only. Unknown materials can be confidently misidentified; designer verification required.</p><div class="controls"><button id="identify" disabled>Identify material (AI research)</button><button id="acceptAI" disabled class="secondary">Confirm suggested family</button></div><p class="sub" id="visionStatus" aria-live="polite">Choose an image to enable AI identification. Model downloads to this browser only when requested.</p><div class="field" style="margin-top:10px"><span>Experimental suggestion</span><b id="aiFamily">—</b><div class="sub" id="aiEvidence">Not classified</div></div></div>
 </section>
 <section class="card"><h2>02 / Material DNA</h2>
 <div class="palette" id="palette"><div class="chip" style="background:#3e4649">Awaiting image</div></div>
@@ -41,15 +41,16 @@
 import {analyzePixels} from '../../packages/inference-sdk/src/index.mjs';
 import {extractPalette,deltaE2000} from '../../packages/cmf-core/src/palette.mjs';
 import {inspectImageQuality} from '../../packages/cmf-core/src/image-quality.mjs';
+import {loadHostedResearchModel,identifyResearchMaterial} from '../../packages/inference-sdk/src/hosted-research.mjs';
 import {validateMaterial,FAMILIES} from '../../packages/material-dna/src/index.mjs';
 const $=id=>document.getElementById(id);
 const KEY='kumo-material-library-v1';
 const library=()=>{try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch{return []}};
 const saveLibrary=items=>localStorage.setItem(KEY,JSON.stringify(items));
-let record=null,palette=[];
+let record=null,palette=[],samplePixels=null,sampleWidth=0,sampleHeight=0,activeId=null,visionModel=null,visionPromise=null,visionSuggestion=null;
 for(const fam of FAMILIES.filter(x=>x!=='unknown')){for(const id of ['family','familyfilter']){const op=document.createElement('option');op.value=fam;op.textContent=fam.replace(/-/g,' ');$(id).append(op)}}
 function downloadJSON(data,name){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500)}
-function update(){if(!record)return;const validation=validateMaterial(record);$('json').textContent=JSON.stringify(record,null,2);$('save').disabled=!validation.valid;$('download').disabled=!validation.valid;$('recognition').textContent=record.classification.family==='unknown'?'Unavailable · Manual':'Designer-authored'}
+function update(){if(!record)return;const validation=validateMaterial(record);$('json').textContent=JSON.stringify(record,null,2);$('save').disabled=!validation.valid;$('download').disabled=!validation.valid;$('recognition').textContent=record.classification.family==='unknown'?'Unknown / unconfirmed':'Designer-confirmed'}
 function renderLibrary(){
  const root=$('records');root.replaceChildren();
  const filter=$('familyfilter').value,q=$('search').value.trim().toLowerCase();
@@ -73,8 +74,8 @@ function renderLibrary(){
   card.append(sw,text,del);root.append(card);
  }
 }
-async function analyze(file){if(!file||!file.type.startsWith('image/'))return;let bmp;try{bmp=await createImageBitmap(file);const scale=Math.min(1,640/Math.max(bmp.width,bmp.height));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bmp.width*scale));canvas.height=Math.max(1,Math.round(bmp.height*scale));const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(bmp,0,0,canvas.width,canvas.height);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-record=analyzePixels(pixels,{sourceName:file.name,stride:5});palette=extractPalette(pixels,{stride:5,maxColors:6});record.palette=palette;record.id=crypto.randomUUID();
+async function analyze(file){if(!file||!file.type.startsWith('image/'))return;let bmp;try{bmp=await createImageBitmap(file);const scale=Math.min(1,640/Math.max(bmp.width,bmp.height));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bmp.width*scale));canvas.height=Math.max(1,Math.round(bmp.height*scale));const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(bmp,0,0,canvas.width,canvas.height);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;samplePixels=new Uint8ClampedArray(pixels);sampleWidth=canvas.width;sampleHeight=canvas.height;visionSuggestion=null;$('acceptAI').disabled=true;$('identify').disabled=false;$('aiFamily').textContent='—';$('aiEvidence').textContent='Not classified';$('visionStatus').textContent='Experimental model ready to load when requested.';
+record=analyzePixels(pixels,{sourceName:file.name,stride:5});palette=extractPalette(pixels,{stride:5,maxColors:6});record.palette=palette;record.id=crypto.randomUUID();activeId=record.id;
 const captureQuality=inspectImageQuality(pixels,canvas.width,canvas.height);
 record.captureQuality=captureQuality;
 $('qualityStatus').textContent=captureQuality.warnings.length?
@@ -85,6 +86,49 @@ $('qualityHints').textContent=captureQuality.warnings.length?
  'Capture checked. Appearance remains visually estimated, not physically verified.';$('primary').textContent=record.color.hex;$('lab').textContent=record.color.lab.map(x=>x.toFixed(1)).join(' / ');$('family').value='unknown';$('palette').replaceChildren();
 for(const c of palette){const d=document.createElement('div');d.className='chip';d.style.background=c.hex;d.title=c.hex+' · '+c.share+'%';d.textContent=c.hex;d.onclick=()=>navigator.clipboard?.writeText(c.hex);$('palette').append(d)}
 const url=URL.createObjectURL(file);const preview=$('preview');preview.onload=()=>URL.revokeObjectURL(url);preview.src=url;preview.hidden=false;update();renderLibrary()}catch(e){console.error(e);alert('Unable to read this image.')}finally{bmp?.close?.()}}
+$('identify').onclick=async()=>{
+ if(!record||!samplePixels)return;
+ const sourceId=activeId;
+ $('identify').disabled=true;$('acceptAI').disabled=true;
+ visionSuggestion=null;
+ $('visionStatus').textContent='Loading experimental vision model…';
+ try{
+  if(!visionModel){
+   if(!visionPromise)visionPromise=loadHostedResearchModel(new URL('../../models/research/',location.href),{
+    onProgress:message=>$('visionStatus').textContent=message
+   }).catch(error=>{visionPromise=null;throw error});
+   visionModel=await visionPromise;
+  }
+  if(sourceId!==activeId)return;
+  $('visionStatus').textContent='Analyzing three image views locally…';
+  const summary=await identifyResearchMaterial(visionModel.classifier,samplePixels,sampleWidth,sampleHeight);
+  if(sourceId!==activeId)return;
+  const known=FAMILIES.includes(summary.family)&&summary.family!=='unknown'&&!summary.withheld;
+  visionSuggestion=known?{...summary,modelVersion:visionModel.manifest.version}:null;
+  $('aiFamily').textContent=known?summary.family.replaceAll('-',' '):'Unknown / insufficient evidence';
+  $('aiEvidence').textContent='Research guess: '+summary.topGuess+' · crop agreement '+Math.round(summary.agreement*100)+'% · raw score '+Math.round(summary.meanRawScore*100)+'% · '+summary.reason;
+  $('visionStatus').textContent=known?'Suggestion available. Review the image and confirm the family manually.':'AI suggestion withheld; use manual classification if known.';
+  $('acceptAI').disabled=!known;
+  record.visionResearch={
+   modelVersion:visionModel.manifest.version,kind:'experimental-catalog-proxy',
+   suggestion:summary.topGuess,withheld:summary.withheld,
+   cropAgreement:summary.agreement,meanRawSoftmax:summary.meanRawScore,
+   confirmedByDesigner:false,notGroundTruth:true
+  };
+  update();
+ }catch(error){
+  if(sourceId===activeId){$('visionStatus').textContent='Vision unavailable: '+(error.message||error);$('aiFamily').textContent='Unavailable';}
+ }finally{if(sourceId===activeId)$('identify').disabled=false}
+};
+$('acceptAI').onclick=()=>{
+ if(!record||!visionSuggestion||visionSuggestion.withheld||!FAMILIES.includes(visionSuggestion.family))return;
+ $('family').value=visionSuggestion.family;
+ record.classification={family:visionSuggestion.family,finish:null,confidence:null,verified:false};
+ record.provenance={level:'designer-authored',modelVersion:null};
+ record.visionResearch={...(record.visionResearch||{}),confirmedByDesigner:true};
+ $('visionStatus').textContent='Designer-confirmed label saved to current Material DNA record.';
+ update();
+};
 $('file').onchange=e=>analyze(e.target.files[0]);$('camera').onclick=()=>$('cameraFile').click();$('cameraFile').onchange=e=>analyze(e.target.files[0]);const drop=$('drop');drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag')};drop.ondragleave=()=>drop.classList.remove('drag');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');analyze(e.dataTransfer.files[0])};
 $('family').onchange=()=>{if(!record)return;record.classification={family:$('family').value,finish:null,confidence:null,verified:false};record.provenance={level:'designer-authored',modelVersion:null};update()};
 $('save').onclick=()=>{if(!record)return;const all=library().filter(x=>x.id!==record.id);all.unshift(record);try{saveLibrary(all.slice(0,150));renderLibrary()}catch{alert('Local storage is full; export your library before adding more.')}};
