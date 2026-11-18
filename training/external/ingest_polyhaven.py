@@ -75,11 +75,11 @@ def discover_family(item: dict) -> str:
         materials = [materials]
     primary = category + " " + " ".join(str(t) for t in materials)
     for family, terms in DISCOVERY.items():
-        if any(re.search(r"\\b" + re.escape(term) + r"\\b", primary) for term in terms):
+        if any(re.search(r"\b" + re.escape(term) + r"\b", primary) for term in terms):
             return family
     secondary = " ".join([str(item.get("name") or ""), *[str(x) for x in item.get("tags", [])]]).lower()
     for family, terms in DISCOVERY.items():
-        if any(re.search(r"\\b" + re.escape(term) + r"\\b", secondary) for term in terms):
+        if any(re.search(r"\b" + re.escape(term) + r"\b", secondary) for term in terms):
             return family
     return "other"
 
