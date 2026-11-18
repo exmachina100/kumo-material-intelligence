@@ -117,7 +117,7 @@ def main():
     predicted=head.predict(scaler.transform(embeddings[test]))
     scores=head.predict_proba(scaler.transform(embeddings[test]))
     report={
-        "experiment":"vision-probe-0.1","status":"RESEARCH_ONLY",
+        "experiment":"vision-probe-0.2","status":"RESEARCH_ONLY",
         "release_eligible":False,"expert_reviewed":False,
         "warning":"Predictions are against weak catalog categories and do NOT measure real-world material recognition.",
         "image_encoder":"torchvision mobilenet_v3_small IMAGENET1K_V1",
@@ -126,7 +126,8 @@ def main():
         "preprocessing":{"size":[IMAGE_SIZE,IMAGE_SIZE],"resize":"bilinear","normalization":{"mean":MEAN,"std":STD}},
         "dataset":{"source":"Poly Haven CC0 previews","samples":len(rows),
                    "class_counts":dict(Counter(labels)),"train":len(train),"test":len(test),
-                   "split_seed":SEED,"split_unit":"unique source asset id + matching checksum"},
+                   "split_seed":SEED,"split_unit":"unique source asset id + matching checksum",
+                   "labels_are_weak_catalog_hints":True},
         "classes":classes,
         "accuracy_vs_proxy":float(accuracy_score(labels[test],predicted)),
         "macro_f1_vs_proxy":float(f1_score(labels[test],predicted,average="macro",zero_division=0)),
