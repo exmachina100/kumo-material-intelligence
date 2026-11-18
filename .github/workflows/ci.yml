@@ -13,6 +13,6 @@ jobs:
       - run: npm test
       - name: Compile and validate Python dataset code
         run: |
-          python -m py_compile training/external/ingest_polyhaven.py training/external/build_reviewed_dataset.py training/synthetic/convert_svg.py training/train_classifier.py training/synthetic/check_manifest.py
+          python -m py_compile training/external/ingest_polyhaven.py training/external/build_reviewed_dataset.py training/synthetic/convert_svg.py training/train_classifier.py training/synthetic/check_manifest.py training/experiments/synthetic_ablation.py training/gpt_synthetic/import_approved_seed.py
           python -m unittest discover -s tests -p 'test_*.py'
           python training/synthetic/check_manifest.py
