@@ -120,8 +120,21 @@ def main():
     head.fit(scaler.transform(embeddings[train]),labels[train])
     predicted=head.predict(scaler.transform(embeddings[test]))
     scores=head.predict_proba(scaler.transform(embeddings[test]))
+    # Report performance separately by upstream material library. This is
+    # still a weak-label benchmark, but it reveals source/domain imbalance.
+    by_source={}
+    for upstream in sorted({row["source"] for row in rows}):
+        positions=[j for j,i in enumerate(test) if rows[int(i)]["source"]==upstream]
+        if not positions:continue
+        actual_source=np.asarray(labels[test])[positions]
+        predicted_source=np.asarray(predicted)[positions]
+        by_source[upstream]={
+            "test_count":len(positions),
+            "proxy_label_accuracy":float(accuracy_score(actual_source,predicted_source)),
+            "macro_f1":float(f1_score(actual_source,predicted_source,average="macro",zero_division=0))
+        }
     report={
-        "experiment":"vision-probe-0.3","status":"RESEARCH_ONLY",
+        "experiment":"vision-probe-0.3-multisource","status":"RESEARCH_ONLY",
         "release_eligible":False,"expert_reviewed":False,
         "warning":"Predictions are against weak catalog categories and do NOT measure real-world material recognition.",
         "image_encoder":"torchvision mobilenet_v3_small IMAGENET1K_V1",
@@ -136,6 +149,7 @@ def main():
         "classes":classes,
         "accuracy_vs_proxy":float(accuracy_score(labels[test],predicted)),
         "macro_f1_vs_proxy":float(f1_score(labels[test],predicted,average="macro",zero_division=0)),
+        "by_source_weak_label_metrics":by_source,
         "classification_report":classification_report(labels[test],predicted,output_dict=True,zero_division=0),
         "confusion_matrix":confusion_matrix(labels[test],predicted,labels=classes).tolist(),
         "heldout_predictions":[{"asset_id":rows[int(i)]["asset_id"],"weak_label":str(labels[i]),
