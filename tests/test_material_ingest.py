@@ -65,6 +65,34 @@ class ReviewedDatasetTests(unittest.TestCase):
             result=BUILD.write_dataset(plan,destination)
             self.assertEqual(result["sample_count"],6)
             self.assertTrue((destination/"dataset-manifest.json").is_file())
+    def test_approved_ambientcg_reviews_join_without_catalog_label_inference(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            first=root/'polyhaven';first.mkdir()
+            other=root/'ambientcg';other.mkdir()
+            (first/'provenance.json').write_text('[]')
+            records=[];reviews=[]
+            for i in range(6):
+                aid=f'ambientcg:Fabric{i:03d}'
+                name=f'Fabric{i:03d}.jpg'
+                blob=f'fabric sample {i}'.encode()
+                (other/name).write_bytes(blob)
+                records.append({'asset_id':aid,'path':name,'source':'ambientCG','license':'CC0',
+                                'catalog_suggestion':'polymer',
+                                'sha256':hashlib.sha256(blob).hexdigest(),
+                                'sample_group':aid})
+                reviews.append({'schemaVersion':'0.1.0','asset_id':aid,
+                                'decision':'include','family':'textile',
+                                'evidence':'visual-only','reviewer':'CMF Reviewer',
+                                'reviewed_at':'2026-11-18T00:00:00Z'})
+            (other/'provenance.json').write_text(json.dumps(records))
+            plan=BUILD.plan_rows(first,reviews,min_per_family=6,additional_sources=[other])
+            self.assertEqual(len(plan),6)
+            self.assertEqual({x['family'] for x in plan},{'textile'})
+            output=root/'reviewed'
+            BUILD.write_dataset(plan,output)
+            self.assertEqual(len(list(output.rglob('*.jpg'))),6)
+            self.assertTrue(any('ambientcg_Fabric' in p.name for p in output.rglob('*.jpg')))
     def test_unreviewed_source_cannot_be_inferred(self):
         with tempfile.TemporaryDirectory() as tmp:
             src=Path(tmp);(src/"provenance.json").write_text("[]")
