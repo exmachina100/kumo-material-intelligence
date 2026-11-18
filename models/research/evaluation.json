@@ -1,0 +1,339 @@
+{
+  "experiment": "vision-probe-0.1",
+  "status": "RESEARCH_ONLY",
+  "release_eligible": false,
+  "expert_reviewed": false,
+  "warning": "Predictions are against weak catalog categories and do NOT measure real-world material recognition.",
+  "image_encoder": "torchvision mobilenet_v3_small IMAGENET1K_V1",
+  "frozen_backbone": true,
+  "features_dimension": 576,
+  "preprocessing": {
+    "size": [
+      224,
+      224
+    ],
+    "resize": "bilinear",
+    "normalization": {
+      "mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "std": [
+        0.229,
+        0.224,
+        0.225
+      ]
+    }
+  },
+  "dataset": {
+    "source": "Poly Haven CC0 previews",
+    "samples": 88,
+    "class_counts": {
+      "stone": 13,
+      "wood": 18,
+      "coating": 13,
+      "leather": 18,
+      "metal": 13,
+      "ceramic": 13
+    },
+    "train": 66,
+    "test": 22,
+    "split_seed": 42,
+    "split_unit": "unique source asset id + matching checksum"
+  },
+  "classes": [
+    "ceramic",
+    "coating",
+    "leather",
+    "metal",
+    "stone",
+    "wood"
+  ],
+  "accuracy_vs_proxy": 0.7727272727272727,
+  "macro_f1_vs_proxy": 0.7566137566137566,
+  "classification_report": {
+    "ceramic": {
+      "precision": 0.6666666666666666,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.6666666666666666,
+      "support": 3.0
+    },
+    "coating": {
+      "precision": 0.5,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.5714285714285714,
+      "support": 3.0
+    },
+    "leather": {
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1-score": 0.8888888888888888,
+      "support": 5.0
+    },
+    "metal": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1-score": 0.8571428571428571,
+      "support": 3.0
+    },
+    "stone": {
+      "precision": 0.6666666666666666,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.6666666666666666,
+      "support": 3.0
+    },
+    "wood": {
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1-score": 0.8888888888888888,
+      "support": 5.0
+    },
+    "accuracy": 0.7727272727272727,
+    "macro avg": {
+      "precision": 0.7638888888888888,
+      "recall": 0.7666666666666666,
+      "f1-score": 0.7566137566137566,
+      "support": 22.0
+    },
+    "weighted avg": {
+      "precision": 0.8068181818181818,
+      "recall": 0.7727272727272727,
+      "f1-score": 0.7806637806637806,
+      "support": 22.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      2,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      2,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      4,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      3,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      2,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      0,
+      4
+    ]
+  ],
+  "heldout_predictions": [
+    {
+      "asset_id": "grey_roof_tiles",
+      "weak_label": "ceramic",
+      "prediction": "ceramic",
+      "max_softmax": 0.9930285811424255
+    },
+    {
+      "asset_id": "aerial_rocks_02",
+      "weak_label": "stone",
+      "prediction": "stone",
+      "max_softmax": 0.9990590214729309
+    },
+    {
+      "asset_id": "rust_coarse_01",
+      "weak_label": "metal",
+      "prediction": "metal",
+      "max_softmax": 0.5680215358734131
+    },
+    {
+      "asset_id": "leather_white",
+      "weak_label": "leather",
+      "prediction": "leather",
+      "max_softmax": 0.99903404712677
+    },
+    {
+      "asset_id": "dark_wood",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.7862515449523926
+    },
+    {
+      "asset_id": "weathered_brown_planks",
+      "weak_label": "wood",
+      "prediction": "coating",
+      "max_softmax": 0.5024322867393494
+    },
+    {
+      "asset_id": "corrugated_iron",
+      "weak_label": "metal",
+      "prediction": "metal",
+      "max_softmax": 0.9826755523681641
+    },
+    {
+      "asset_id": "beige_wall_002",
+      "weak_label": "coating",
+      "prediction": "coating",
+      "max_softmax": 0.9013716578483582
+    },
+    {
+      "asset_id": "fabric_pattern_05",
+      "weak_label": "leather",
+      "prediction": "ceramic",
+      "max_softmax": 0.8592051267623901
+    },
+    {
+      "asset_id": "rough_linen",
+      "weak_label": "leather",
+      "prediction": "leather",
+      "max_softmax": 0.9991399049758911
+    },
+    {
+      "asset_id": "patio_tiles",
+      "weak_label": "ceramic",
+      "prediction": "stone",
+      "max_softmax": 0.5268529653549194
+    },
+    {
+      "asset_id": "concrete_wall_001",
+      "weak_label": "coating",
+      "prediction": "coating",
+      "max_softmax": 0.9929026961326599
+    },
+    {
+      "asset_id": "roof_3",
+      "weak_label": "ceramic",
+      "prediction": "ceramic",
+      "max_softmax": 0.9983831644058228
+    },
+    {
+      "asset_id": "wood_table_worn",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.807914137840271
+    },
+    {
+      "asset_id": "laminate_floor_02",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.9371084570884705
+    },
+    {
+      "asset_id": "coast_sand_rocks_02",
+      "weak_label": "stone",
+      "prediction": "stone",
+      "max_softmax": 0.765329122543335
+    },
+    {
+      "asset_id": "rough_wood",
+      "weak_label": "wood",
+      "prediction": "wood",
+      "max_softmax": 0.8269457817077637
+    },
+    {
+      "asset_id": "painted_concrete",
+      "weak_label": "coating",
+      "prediction": "metal",
+      "max_softmax": 0.8064780235290527
+    },
+    {
+      "asset_id": "fabric_pattern_07",
+      "weak_label": "leather",
+      "prediction": "leather",
+      "max_softmax": 0.9265161752700806
+    },
+    {
+      "asset_id": "granite_tile",
+      "weak_label": "stone",
+      "prediction": "coating",
+      "max_softmax": 0.745193362236023
+    },
+    {
+      "asset_id": "metal_plate_02",
+      "weak_label": "metal",
+      "prediction": "metal",
+      "max_softmax": 0.8666929006576538
+    },
+    {
+      "asset_id": "fabric_leather_02",
+      "weak_label": "leather",
+      "prediction": "leather",
+      "max_softmax": 0.9997199177742004
+    }
+  ],
+  "runtime_seconds": 0.5,
+  "unknown_rejection_catalog_proxy": {
+    "in_domain_count": 22,
+    "out_domain_count": 22,
+    "in_mean_max_softmax": 0.8541,
+    "out_mean_max_softmax": 0.7113,
+    "thresholds": [
+      {
+        "threshold": 0.5,
+        "in_domain_accept_rate": 1.0,
+        "out_domain_false_accept_rate": 0.8636,
+        "in_accepted": 22,
+        "out_accepted": 19
+      },
+      {
+        "threshold": 0.65,
+        "in_domain_accept_rate": 0.8636,
+        "out_domain_false_accept_rate": 0.5455,
+        "in_accepted": 19,
+        "out_accepted": 12
+      },
+      {
+        "threshold": 0.8,
+        "in_domain_accept_rate": 0.7273,
+        "out_domain_false_accept_rate": 0.3636,
+        "in_accepted": 16,
+        "out_accepted": 8
+      },
+      {
+        "threshold": 0.9,
+        "in_domain_accept_rate": 0.5,
+        "out_domain_false_accept_rate": 0.2727,
+        "in_accepted": 11,
+        "out_accepted": 6
+      }
+    ],
+    "warning": "Softmax is not calibrated. Proxy-only diagnostics; NOT evidence of safe unknown rejection in production.",
+    "excluded_catalog_categories": {
+      "concrete": 14,
+      "other": 1,
+      "paper": 1,
+      "polymer": 6
+    }
+  },
+  "onnx_export": {
+    "success": true,
+    "max_abs_logit_diff": 3.814697265625e-06,
+    "bytes": 3739330
+  }
+}
