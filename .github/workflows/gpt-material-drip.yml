@@ -20,6 +20,8 @@ on:
     paths:
       - 'training/gpt_synthetic/drip.py'
       - 'tests/test_gpt_material_drip.py'
+      - 'training/gpt_synthetic/build_index.py'
+      - 'tests/test_gpt_material_index.py'
       - '.github/workflows/gpt-material-drip.yml'
 permissions:
   contents: write
@@ -42,6 +44,7 @@ jobs:
       - name: Run deterministic image pipeline tests
         run: |
           python -m unittest discover -s tests -p 'test_gpt_material_drip.py' -v
+          python -m unittest discover -s tests -p 'test_gpt_material_index.py' -v
           python training/gpt_synthetic/drip.py --date 2026-11-18 --count 6 --dry-run
       - name: Decide if a new batch should be generated
         id: batch
@@ -116,9 +119,10 @@ jobs:
           mkdir -p training/gpt_synthetic/manifests training/gpt_synthetic/previews
           cp "$RUNNER_TEMP/$TAG/manifest.json" "training/gpt_synthetic/manifests/$BATCH_DATE.json"
           cp "$RUNNER_TEMP/$TAG/preview.jpg" "training/gpt_synthetic/previews/$BATCH_DATE.jpg"
+          python training/gpt_synthetic/build_index.py --root training/gpt_synthetic
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add training/gpt_synthetic/manifests training/gpt_synthetic/previews
+          git add training/gpt_synthetic/manifests training/gpt_synthetic/previews training/gpt_synthetic/index.json
           git commit -m "Record $TAG with generated CMF macro preview and provenance"
           for attempt in 1 2 3; do
             git fetch origin main
