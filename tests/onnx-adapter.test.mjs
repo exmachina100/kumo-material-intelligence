@@ -6,7 +6,7 @@ test('valid session returns calibrated softmax estimate',async()=>{
  const session={inputNames:['image'],outputNames:['logits'],run:async({image})=>{assert.deepEqual(image.dims,[1,3,2,2]);return {logits:{data:Float32Array.from([0,3])}}}};
  const model=new OnnxMaterialClassifier({session,Tensor:MockTensor,labels:['polymer','metal'],inputSize:2,version:'test-only'});
  const r=await model.classify(new Uint8ClampedArray([255,0,0,255]),{width:1,height:1});
- assert.equal(r.family,'metal');assert.ok(r.confidence>.9);
+ assert.equal(r.family,'metal');assert.ok(r.confidence>.9);assert.equal(r.alternatives[0].family,'metal');assert.ok(r.alternatives[0].rawSoftmax>.9);
 });
 test('dimension mismatch fails safely',async()=>{
  const model=new OnnxMaterialClassifier({session:{run:async()=>({})},Tensor:MockTensor,labels:['metal'],version:'test'});
