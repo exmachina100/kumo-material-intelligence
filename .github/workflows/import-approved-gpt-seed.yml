@@ -1,0 +1,47 @@
+name: Package GPT approved visual labels - synthetic train-only
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'training/gpt_synthetic/import_approved_seed.py'
+      - 'training/gpt_synthetic/approved_seed_2026-11-18.json'
+      - 'tests/test_approved_gpt_seed.py'
+      - '.github/workflows/import-approved-gpt-seed.yml'
+permissions:
+  contents: write
+concurrency:
+  group: gpt-cmf-seed-package
+  cancel-in-progress: false
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install "Pillow>=10,<13"
+      - name: Validate ten visually approved synthetic labels
+        run: python -m unittest discover -s tests -p 'test_approved_gpt_seed.py' -v
+      - name: Download pinned original images and package strictly train-only
+        run: python training/gpt_synthetic/import_approved_seed.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gpt-cmf-10-approved-synthetic-train-only
+          path: training/out/gpt-cmf-seed-2026-11-18.zip
+          retention-days: 30
+      - name: Publish persistent train-only GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=gpt-cmf-approved-seed-2026-11-18
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release already exists; no duplicate publication"
+            exit 0
+          fi
+          gh release create "$TAG" \
+            training/out/gpt-cmf-seed-2026-11-18.zip \
+            --target main \
+            --title "10 GPT material images with approved visual labels - TRAIN ONLY" \
+            --notes "Visually assigned GPT-generated material category intents, never physical substrate identity. Training-only synthetic images, never real validation/test. Includes per-image SHA256 and original source URLs."
