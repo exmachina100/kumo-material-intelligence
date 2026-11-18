@@ -31,7 +31,7 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision import models, transforms
 from torchvision.transforms import InterpolationMode
 
-from vision_dataset import select_catalog_samples
+from vision_dataset import select_multisource_samples
 from rejection_metrics import rejection_summary
 
 SEED = 42
@@ -93,13 +93,17 @@ def main():
     ap.add_argument("--output",type=Path,default=Path("training/out/vision-probe"))
     ap.add_argument("--min-class-samples",type=int,default=8)
     ap.add_argument("--batch-size",type=int,default=12)
+    ap.add_argument("--ambient-source",type=Path,default=Path("training/external/ambientcg_cc0_staging"))
     ap.add_argument("--skip-onnx",action="store_true",help="Only run research evaluation")
     args=ap.parse_args()
     torch.manual_seed(SEED)
     random.seed(SEED)
     np.random.seed(SEED)
     torch.set_num_threads(min(4,torch.get_num_threads()))
-    rows=select_catalog_samples(args.source,args.min_class_samples)
+    source_dirs=[args.source]
+    if (args.ambient_source/"provenance.json").is_file():
+        source_dirs.append(args.ambient_source)
+    rows=select_multisource_samples(source_dirs,args.min_class_samples)
     labels=np.array([x["weak_label"] for x in rows])
     classes=sorted(set(labels.tolist()))
     idx=np.arange(len(rows))
@@ -117,14 +121,15 @@ def main():
     predicted=head.predict(scaler.transform(embeddings[test]))
     scores=head.predict_proba(scaler.transform(embeddings[test]))
     report={
-        "experiment":"vision-probe-0.2","status":"RESEARCH_ONLY",
+        "experiment":"vision-probe-0.3","status":"RESEARCH_ONLY",
         "release_eligible":False,"expert_reviewed":False,
         "warning":"Predictions are against weak catalog categories and do NOT measure real-world material recognition.",
         "image_encoder":"torchvision mobilenet_v3_small IMAGENET1K_V1",
         "frozen_backbone":True,
         "features_dimension":int(embeddings.shape[1]),
         "preprocessing":{"size":[IMAGE_SIZE,IMAGE_SIZE],"resize":"bilinear","normalization":{"mean":MEAN,"std":STD}},
-        "dataset":{"source":"Poly Haven CC0 previews","samples":len(rows),
+        "dataset":{"source":"Poly Haven + ambientCG CC0 preview textures","samples":len(rows),
+                   "source_counts":dict(Counter(item["source"] for item in rows)),
                    "class_counts":dict(Counter(labels)),"train":len(train),"test":len(test),
                    "split_seed":SEED,"split_unit":"unique source asset id + matching checksum",
                    "labels_are_weak_catalog_hints":True},
@@ -140,27 +145,30 @@ def main():
     }
     # Probe explicit out-of-label catalog categories as a tiny OOD sanity check.
     # These remain weak source hints, not a real automotive unknown-detection set.
-    source_records=json.loads((args.source/"provenance.json").read_text())
+    source_records=[]
+    for folder in source_dirs:
+        source_records.append((folder,json.loads((folder/"provenance.json").read_text())))
     trained_ids={item["asset_id"] for item in rows}
     seen_ood_hash=set()
     ood=[]
-    for item in source_records:
-        if item.get("source")!="Poly Haven" or item.get("license")!="CC0":
-            continue
-        if item.get("asset_id") in trained_ids or item.get("catalog_suggestion") in classes:
-            continue
-        name=item.get("path")
-        if not isinstance(name,str) or not name.endswith(".jpg") or Path(name).name!=name:
-            continue
-        image_path=args.source/name
-        if not image_path.is_file():
-            continue
-        hash_value=hashlib.sha256(image_path.read_bytes()).hexdigest()
-        if hash_value!=item.get("sha256") or hash_value in seen_ood_hash:
-            continue
-        seen_ood_hash.add(hash_value)
-        ood.append({"asset_id":item["asset_id"],"path":str(image_path),
-                    "catalog_category":item.get("catalog_suggestion") or "other"})
+    for folder,records in source_records:
+        for item in records:
+            if item.get("source") not in ("Poly Haven","ambientCG") or item.get("license")!="CC0":
+                continue
+            if item.get("asset_id") in trained_ids or item.get("catalog_suggestion") in classes:
+                continue
+            name=item.get("path")
+            if not isinstance(name,str) or not name.endswith(".jpg") or Path(name).name!=name:
+                continue
+            image_path=folder/name
+            if not image_path.is_file():
+                continue
+            hash_value=hashlib.sha256(image_path.read_bytes()).hexdigest()
+            if hash_value!=item.get("sha256") or hash_value in seen_ood_hash:
+                continue
+            seen_ood_hash.add(hash_value)
+            ood.append({"asset_id":item["asset_id"],"path":str(image_path),
+                        "catalog_category":item.get("catalog_suggestion") or "other"})
     if ood:
         out_embedding=extract_embeddings(encoder,ood,args.batch_size)
         out_scores=head.predict_proba(scaler.transform(out_embedding)).max(axis=1)
