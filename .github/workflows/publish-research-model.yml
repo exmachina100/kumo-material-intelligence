@@ -1,0 +1,56 @@
+name: Publish pinned experimental vision model assets
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/publish-research-model.yml'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download verified model from research training run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p models/research
+          gh run download 44160302007 -n materialnet-vision-probe-research-onnx -D models/research
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('models/research')
+          m=json.loads((root/'manifest.json').read_text())
+          assert not m['approved'] and not m['releaseEligible'] and not m['expertReviewed']
+          model=(root/m['weights']).read_bytes()
+          assert len(model)==m['bytes']
+          assert hashlib.sha256(model).hexdigest()==m['sha256']
+          assert json.loads((root/'labels.json').read_text())==m['labels']
+          assert json.loads((root/'evaluation.json').read_text())['release_eligible'] is False
+          print('Research-only ONNX artifact SHA-256 and labels verified')
+          PY
+      - name: Preserve experimental assets in repository for stable web hosting
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f models/research/vision-probe-research.onnx models/research/labels.json models/research/evaluation.json
+          if git diff --cached --quiet; then
+            echo 'Model assets already preserved'
+            exit 0
+          fi
+          git commit -m 'Preserve checksum-verified research ONNX material vision weights'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo 'Unable to persist model assets' >&2
+          exit 1
