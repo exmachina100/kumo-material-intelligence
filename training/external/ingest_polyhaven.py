@@ -61,25 +61,39 @@ def safe_get(url: str, max_bytes: int = MAX_BYTES) -> bytes:
 
 
 def discover_family(item: dict) -> str:
-    """Conservative catalog suggestion, never a verified material label.
+    """Return a weak, review-required family suggestion from source metadata.
 
-    Prefer explicit category and structured material facets. Avoid loose tags
-    (e.g. 'metallic color' on a wood asset) when category is already known.
+    Prefer the most specific category (leaf first) to avoid mapping
+    "Textiles & Leather/Leather" to textile or "Plastic & Rubber/Rubber" to polymer.
     """
-    category = str(item.get("category") or "").lower()
-    attributes = item.get("attributes") or {}
-    if not isinstance(attributes, dict):
-        attributes = {}
-    materials = attributes.get("material") or []
-    if isinstance(materials, str):
-        materials = [materials]
-    primary = category + " " + " ".join(str(t) for t in materials)
-    for family, terms in DISCOVERY.items():
-        if any(re.search(r"\b" + re.escape(term) + r"\b", primary) for term in terms):
+    def resolve(text: str) -> str:
+        text = text.lower()
+        for family, terms in DISCOVERY.items():
+            if any(re.search(r"\b" + re.escape(term) + r"s?\b", text) for term in terms):
+                return family
+        return "other"
+
+    category = str(item.get("category") or "")
+    segments = [part.strip() for part in category.split("/") if part.strip()]
+    for segment in reversed(segments):
+        # Generic parent categories naming multiple substrates are ambiguous.
+        if (" & " in segment or " and " in segment.lower()):
+            continue
+        family = resolve(segment)
+        if family != "other":
             return family
-    secondary = " ".join([str(item.get("name") or ""), *[str(x) for x in item.get("tags", [])]]).lower()
-    for family, terms in DISCOVERY.items():
-        if any(re.search(r"\b" + re.escape(term) + r"\b", secondary) for term in terms):
+    attributes = item.get("attributes") or {}
+    if isinstance(attributes, dict):
+        materials = attributes.get("material") or []
+        if isinstance(materials, str):
+            materials = [materials]
+        for material in materials:
+            family = resolve(str(material))
+            if family != "other":
+                return family
+    for text in [str(item.get("name") or ""), *[str(x) for x in item.get("tags", [])]]:
+        family = resolve(text)
+        if family != "other":
             return family
     return "other"
 
